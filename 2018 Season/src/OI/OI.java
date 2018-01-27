@@ -12,9 +12,7 @@ package OI;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-	
-	// Test Comment!
-	
+		
 	GameController gameController = new XBoxController(0);
 
 	public boolean isPistons(){
