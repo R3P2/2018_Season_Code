@@ -13,8 +13,6 @@ import robot.commands.JoystickCommand;
  */
 public class ChassisSubsystem extends Subsystem {
 
-	// This is a test comment
-	
 	DoubleSolenoid PistonOne = new DoubleSolenoid(0, 1);
 	DoubleSolenoid PistonTwo = new DoubleSolenoid(2, 3);
 
