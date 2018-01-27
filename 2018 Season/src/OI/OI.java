@@ -30,4 +30,12 @@ public class OI {
 	public double getClimb(){
 		return gameController.getRightYAxis();
 	}
+	
+	public boolean isAccelerating(){
+		return gameController.isLeftBumperDown();
+	}
+	
+	public boolean isNotAccelerating(){
+		return gameController.isRightBumperDown();
+	}
 }

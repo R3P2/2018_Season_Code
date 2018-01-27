@@ -78,7 +78,7 @@ public class XBoxController extends GameController {
 
 	@Override
 	public double getRightXAxis() {
-		return joystick.getRawAxis(4);
+		return -joystick.getRawAxis(4);
 	}
 
 	@Override
