@@ -27,6 +27,15 @@ public class ChassisSubsystem extends Subsystem {
 
 	Encoder leftEncoder = new Encoder(0, 1);
 	Encoder rightEncoder = new Encoder(2, 3, true);
+	
+	double m_dSpeedNoiseThreshold = 0.1;
+	double m_dTurnNoiseThreshold = 0.2;
+	double m_dPrevSpeed = 0;
+	double m_dAccelTime_s = 1.0;
+	double m_dCycleTime_s = 0.020;
+	int m_nAccelCount = 0;
+	int m_nAccelCycles = (int)(m_dAccelTime_s / m_dCycleTime_s);
+	double m_dSpeedAdvInc = 1.0 / m_nAccelCycles;
 
 	public Gyro gyro = new Gyro();
 
@@ -70,7 +79,7 @@ public class ChassisSubsystem extends Subsystem {
 		setMotors(speed, speed);
 	}
 
-	public void setMovement(double speed, double turn) {
+	/*public void setMovement(double speed, double turn) {
 
 		if (Math.abs(turn) < 0.2 && Math.abs(speed) > 0.1) {
 
@@ -92,9 +101,9 @@ public class ChassisSubsystem extends Subsystem {
 			setMotors(0);
 		}
 
-	}
+	}*/
 	
-	/*
+	
 	public void setMovement(double speed, double turn) {
 		
 		double dabs_speed, dabs_turn, daccspeed;
@@ -150,11 +159,11 @@ public class ChassisSubsystem extends Subsystem {
 			setMotors(-turn, turn);
 
 		} else {
-			setSpeed(0);
+			setMotors(0);
 		}
 		m_dPrevSpeed = dabs_speed;
 	}
-	*/
+	
 
 	public double movePid(double speed, double feedback, double maxSpeed) {
 
