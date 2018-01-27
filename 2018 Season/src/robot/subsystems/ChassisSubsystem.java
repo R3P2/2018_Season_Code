@@ -20,11 +20,11 @@ public class ChassisSubsystem extends Subsystem {
 	// TalonSRX leftMotor = new TalonSRX(1);
 	// TalonSRX rightMotor = new TalonSRX(0);
 
-	Victor leftMotor = new Victor(0);
-	Victor rightMotor = new Victor(1);
+	Victor leftMotor = new Victor(RobotMap.LEFT_MOTOR_PORT);
+	Victor rightMotor = new Victor(RobotMap.RIGHT_MOTOR_PORT);
 
-	Encoder leftEncoder = new Encoder(0, 1);
-	Encoder rightEncoder = new Encoder(2, 3);
+	Encoder leftEncoder = new Encoder(RobotMap.LEFT_ENCODER_PORT_ONE, RobotMap.LEFT_ENCODER_PORT_TWO);
+	Encoder rightEncoder = new Encoder(RobotMap.RIGHT_ENCODER_PORT_ONE, RobotMap.RIGHT_ENCODER_PORT_TWO);
 
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
