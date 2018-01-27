@@ -93,6 +93,68 @@ public class ChassisSubsystem extends Subsystem {
 		}
 
 	}
+	
+	/*
+	public void setMovement(double speed, double turn) {
+		
+		double dabs_speed, dabs_turn, daccspeed;
+		
+		dabs_speed = Math.abs(speed);
+		dabs_turn = Math.abs(turn);
+		
+		if (m_dPrevSpeed < m_dSpeedNoiseThreshold)
+		{
+			if (dabs_speed < m_dSpeedNoiseThreshold)
+			{
+				m_nAccelCount = 0;
+				daccspeed = 0;
+			}
+			else 
+			{
+				m_nAccelCount++;
+				daccspeed = m_nAccelCount * m_dSpeedAdvInc;
+				if (speed < 0)
+					daccspeed = -daccspeed;
+			}
+		}
+		else
+		{
+			if (m_nAccelCount < m_nAccelCycles)
+			{
+				m_nAccelCount++;
+				daccspeed = m_nAccelCount * m_dSpeedAdvInc;
+				if (speed < 0)
+					daccspeed = -daccspeed;
+				if (Math.abs(daccspeed) > dabs_speed)
+				{
+					daccspeed = speed;
+				}
+			}
+			else
+			{
+				daccspeed = speed;
+			}
+		}
+	
+		if (dabs_turn < m_dTurnNoiseThreshold && dabs_speed > m_dSpeedNoiseThreshold) {
+			setMotors(daccspeed, daccspeed);
+		} else if (dabs_turn > m_dTurnNoiseThreshold && dabs_speed > m_dSpeedNoiseThreshold) {
+
+			if (turn > m_dTurnNoiseThreshold) {
+				setMotors(daccspeed, (1 - turn) * daccspeed);
+			} else {
+				setMotors((1 - dabs_turn) * daccspeed, daccspeed);
+			}
+		} else if (dabs_turn > m_dTurnNoiseThreshold) {
+
+			setMotors(-turn, turn);
+
+		} else {
+			setSpeed(0);
+		}
+		m_dPrevSpeed = dabs_speed;
+	}
+	*/
 
 	public double movePid(double speed, double feedback, double maxSpeed) {
 
