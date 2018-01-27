@@ -7,24 +7,28 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import robot.RobotMap;
 import robot.commands.JoystickCommand;
+import robot.util.Gyro;
 
 /**
  *
  */
 public class ChassisSubsystem extends Subsystem {
 
-	DoubleSolenoid PistonOne = new DoubleSolenoid(0, 1);
+	// DoubleSolenoid PistonOne = new DoubleSolenoid(0, 1);
 	DoubleSolenoid PistonTwo = new DoubleSolenoid(2, 3);
 
 	// Our talon speed controlers. Only uncomment when talons are connected:
 	// TalonSRX leftMotor = new TalonSRX(1);
 	// TalonSRX rightMotor = new TalonSRX(0);
 
-	Victor leftMotor = new Victor(RobotMap.LEFT_MOTOR_PORT);
-	Victor rightMotor = new Victor(RobotMap.RIGHT_MOTOR_PORT);
+	// Our Victor speed controllers. Only uncomment when victors are connected:
+	Victor leftMotor = new Victor(0);
+	Victor rightMotor = new Victor(1);
 
-	Encoder leftEncoder = new Encoder(RobotMap.LEFT_ENCODER_PORT_ONE, RobotMap.LEFT_ENCODER_PORT_TWO);
-	Encoder rightEncoder = new Encoder(RobotMap.RIGHT_ENCODER_PORT_ONE, RobotMap.RIGHT_ENCODER_PORT_TWO);
+	Encoder leftEncoder = new Encoder(0, 1);
+	Encoder rightEncoder = new Encoder(2, 3, true);
+
+	public Gyro gyro = new Gyro();
 
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
@@ -33,28 +37,45 @@ public class ChassisSubsystem extends Subsystem {
 	}
 
 	public void setPistons(boolean state) {
-		PistonOne.set(state ? Value.kForward : Value.kReverse);
+		// PistonOne.set(state ? Value.kForward : Value.kReverse);
 		PistonTwo.set(state ? Value.kForward : Value.kReverse);
 	}
 
-	// These are the movement related methods
-	// Use these to move the robot
-	
-	public void setMotors(double rightSpeed, double leftSpeed) {
-		leftMotor.set(getPID(leftSpeed, leftEncoder.getDistance(), RobotMap.LEFT_ENCODER_MAX_SPEED));
-		rightMotor.set(getPID(leftSpeed, rightEncoder.getDistance(), RobotMap.RIGHT_ENCODER_MAX_SPEED));
+	public double getEncoderCounts() {
+
+		return (leftEncoder.getDistance() + rightEncoder.getDistance()) / 2;
+
 	}
 
-	public void setSpeed(double speed) {
+	public void resetEncoders() {
+
+		leftEncoder.reset();
+		rightEncoder.reset();
+
+	}
+
+	public void setArmSpeed(double speed) {
+
+		leftMotor.set(speed);
+		rightMotor.set(speed);
+
+	}
+
+	public void setMotors(double rightSpeed, double leftSpeed) {
+		leftMotor.set(movePid(leftSpeed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
+		rightMotor.set(movePid(rightSpeed, rightEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
+	}
+
+	public void setMotors(double speed) {
 		setMotors(speed, speed);
 	}
 
 	public void setMovement(double speed, double turn) {
+
 		if (Math.abs(turn) < 0.2 && Math.abs(speed) > 0.1) {
 
 			setMotors(speed, speed);
 
-			System.out.println("running");
 		} else if (Math.abs(turn) > 0.2 && Math.abs(speed) > 0.1) {
 
 			if (turn > 0.2) {
@@ -68,14 +89,14 @@ public class ChassisSubsystem extends Subsystem {
 			setMotors(-turn, turn);
 
 		} else {
-			setSpeed(0);
+			setMotors(0);
 		}
+
 	}
 
-	public double getPID(double speed, double feedback, int maxSpeed) {
+	public double movePid(double speed, double feedback, double maxSpeed) {
 
 		double normalizedFeedback = feedback / maxSpeed;
-
 		if (normalizedFeedback > 1.0) {
 			normalizedFeedback = 1.0;
 		}
@@ -85,9 +106,9 @@ public class ChassisSubsystem extends Subsystem {
 
 		double error = speed - normalizedFeedback;
 
-		double output = RobotMap.KP * error;
+		double output = speed + error;
 
-		double normalizedOutput = output + speed;
+		double normalizedOutput = output;
 
 		if (normalizedOutput > 1.0) {
 			normalizedOutput = 1.0;
@@ -97,6 +118,8 @@ public class ChassisSubsystem extends Subsystem {
 		}
 
 		return normalizedOutput;
+
 	}
 
 }
+

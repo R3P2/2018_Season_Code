@@ -25,7 +25,7 @@ public class RobotMap {
 	
 	public final static double KP = 0.1;
 	
-	public static int LEFT_ENCODER_MAX_SPEED = 1800;
-	public static int RIGHT_ENCODER_MAX_SPEED = 2000;
+	public final static int MAX_LEFT_ENCODER_SPEED = 2000;
+	public final static int MAX_RIGHT_ENCODER_SPEED = 1800;
 	
 }
