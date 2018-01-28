@@ -79,19 +79,21 @@ public class ChassisSubsystem extends Subsystem {
 
 	public void setMovement(double speed, double turn) {
 
-		if (Math.abs(turn) < 0.2 && Math.abs(speed) > 0.1) {
+		double dabs_speed, dabs_turn;
 
+		dabs_speed = Math.abs(speed);
+		dabs_turn = Math.abs(turn);
+
+		if (dabs_turn < RobotMap.JOYSTICK_NOISE_THRESHOLD && dabs_speed > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 			setMotors(speed, speed);
+		} else if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD && dabs_speed > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 
-		} else if (Math.abs(turn) > 0.2 && Math.abs(speed) > 0.1) {
-
-			if (turn > 0.2) {
+			if (turn > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 				setMotors(speed, (1 - turn) * speed);
 			} else {
-				setMotors((1 - Math.abs(turn)) * speed, speed);
+				setMotors((1 - dabs_turn) * speed, speed);
 			}
-
-		} else if (Math.abs(turn) > 0.2) {
+		} else if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 
 			setMotors(-turn, turn);
 
@@ -103,10 +105,9 @@ public class ChassisSubsystem extends Subsystem {
 
 	public void setAcceleration(double speed, double turn) {
 
-		double dabs_speed, dabs_turn, daccspeed;
+		double dabs_speed, daccspeed;
 
 		dabs_speed = Math.abs(speed);
-		dabs_turn = Math.abs(turn);
 
 		if (m_dPrevSpeed < RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 			if (dabs_speed < RobotMap.JOYSTICK_NOISE_THRESHOLD) {
@@ -132,23 +133,8 @@ public class ChassisSubsystem extends Subsystem {
 			}
 		}
 
-		if (dabs_turn < RobotMap.JOYSTICK_NOISE_THRESHOLD && dabs_speed > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
-			setMotors(daccspeed, daccspeed);
-		} else if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD && dabs_speed > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
+		setMovement(daccspeed, turn);
 
-			if (turn > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
-				setMotors(daccspeed, (1 - turn) * daccspeed);
-			} else {
-				setMotors((1 - dabs_turn) * daccspeed, daccspeed);
-			}
-		} else if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
-
-			setMotors(-turn, turn);
-
-		} else {
-			setMotors(0);
-		}
-		
 		m_dPrevSpeed = dabs_speed;
 	}
 
