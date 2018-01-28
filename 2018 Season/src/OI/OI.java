@@ -32,10 +32,10 @@ public class OI {
 	}
 	
 	public boolean isAccelerating(){
-		return gameController.isLeftBumperDown();
+		return gameController.isADown();
 	}
 	
 	public boolean isNotAccelerating(){
-		return gameController.isRightBumperDown();
+		return gameController.isXDown();
 	}
 }

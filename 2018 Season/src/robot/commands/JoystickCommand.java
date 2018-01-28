@@ -13,7 +13,7 @@ public class JoystickCommand extends Command {
 	ChassisSubsystem chassisSubsystem;
 	OI oi;
 	boolean isAccelerating;
-	
+
 	public JoystickCommand() {
 		requires(Robot.chassisSubsystem);
 	}
@@ -27,17 +27,21 @@ public class JoystickCommand extends Command {
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
+
 		boolean startAcceleration = oi.isAccelerating();
 		boolean stopAcceleration = oi.isNotAccelerating();
+
+		if (startAcceleration) {
+			isAccelerating = true;
+		}
 		
-		double elevatorSpeed = oi.getClimb();
-		
-		if(startAcceleration){isAccelerating = true;}
-		if(stopAcceleration){isAccelerating = false;}
-		
-		if(isAccelerating){
-			chassisSubsystem.setAcceleration(oi.getSpeed(), oi.getTurn());	
-		}else{
+		if (stopAcceleration) {
+			isAccelerating = false;
+		}
+
+		if (isAccelerating) {
+			chassisSubsystem.setAcceleration(oi.getSpeed(), oi.getTurn());
+		} else {
 			chassisSubsystem.setMovement(oi.getSpeed(), oi.getTurn());
 		}
 	}

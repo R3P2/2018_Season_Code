@@ -28,6 +28,6 @@ public class RobotMap {
 	public final static int MAX_LEFT_ENCODER_SPEED = 2000;
 	public final static int MAX_RIGHT_ENCODER_SPEED = 1800;
 	
-	public final static double threshHold = 0.2;
+	public final static double JOYSTICK_NOISE_THRESHOLD = 0.2;
 	
 }

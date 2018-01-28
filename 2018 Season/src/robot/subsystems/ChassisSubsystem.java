@@ -27,14 +27,12 @@ public class ChassisSubsystem extends Subsystem {
 
 	Encoder leftEncoder = new Encoder(0, 1);
 	Encoder rightEncoder = new Encoder(2, 3, true);
-	
-	double m_dSpeedNoiseThreshold = 0.1;
-	double m_dTurnNoiseThreshold = 0.2;
+
 	double m_dPrevSpeed = 0;
 	double m_dAccelTime_s = 4.0;
 	double m_dCycleTime_s = 0.020;
 	int m_nAccelCount = 0;
-	int m_nAccelCycles = (int)(m_dAccelTime_s / m_dCycleTime_s);
+	int m_nAccelCycles = (int) (m_dAccelTime_s / m_dCycleTime_s);
 	double m_dSpeedAdvInc = 1.0 / m_nAccelCycles;
 
 	public Gyro gyro = new Gyro();
@@ -102,68 +100,57 @@ public class ChassisSubsystem extends Subsystem {
 		}
 
 	}
-	
-	
+
 	public void setAcceleration(double speed, double turn) {
-		
+
 		double dabs_speed, dabs_turn, daccspeed;
-		
+
 		dabs_speed = Math.abs(speed);
 		dabs_turn = Math.abs(turn);
-		
-		if (m_dPrevSpeed < m_dSpeedNoiseThreshold)
-		{
-			if (dabs_speed < m_dSpeedNoiseThreshold)
-			{
+
+		if (m_dPrevSpeed < RobotMap.JOYSTICK_NOISE_THRESHOLD) {
+			if (dabs_speed < RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 				m_nAccelCount = 0;
 				daccspeed = 0;
-			}
-			else 
-			{
+			} else {
 				m_nAccelCount++;
 				daccspeed = m_nAccelCount * m_dSpeedAdvInc;
 				if (speed < 0)
 					daccspeed = -daccspeed;
 			}
-		}
-		else
-		{
-			if (m_nAccelCount < m_nAccelCycles)
-			{
+		} else {
+			if (m_nAccelCount < m_nAccelCycles) {
 				m_nAccelCount++;
 				daccspeed = m_nAccelCount * m_dSpeedAdvInc;
 				if (speed < 0)
 					daccspeed = -daccspeed;
-				if (Math.abs(daccspeed) > dabs_speed)
-				{
+				if (Math.abs(daccspeed) > dabs_speed) {
 					daccspeed = speed;
 				}
-			}
-			else
-			{
+			} else {
 				daccspeed = speed;
 			}
 		}
-	
-		if (dabs_turn < m_dTurnNoiseThreshold && dabs_speed > m_dSpeedNoiseThreshold) {
-			setMotors(daccspeed, daccspeed);
-		} else if (dabs_turn > m_dTurnNoiseThreshold && dabs_speed > m_dSpeedNoiseThreshold) {
 
-			if (turn > m_dTurnNoiseThreshold) {
+		if (dabs_turn < RobotMap.JOYSTICK_NOISE_THRESHOLD && dabs_speed > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
+			setMotors(daccspeed, daccspeed);
+		} else if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD && dabs_speed > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
+
+			if (turn > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 				setMotors(daccspeed, (1 - turn) * daccspeed);
 			} else {
 				setMotors((1 - dabs_turn) * daccspeed, daccspeed);
 			}
-		} else if (dabs_turn > m_dTurnNoiseThreshold) {
+		} else if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 
 			setMotors(-turn, turn);
 
 		} else {
 			setMotors(0);
 		}
+		
 		m_dPrevSpeed = dabs_speed;
 	}
-	
 
 	public double movePid(double speed, double feedback, double maxSpeed) {
 
@@ -193,4 +180,3 @@ public class ChassisSubsystem extends Subsystem {
 	}
 
 }
-
