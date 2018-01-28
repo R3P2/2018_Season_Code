@@ -61,19 +61,12 @@ public class ChassisSubsystem extends Subsystem {
 
 	}
 
-	public void setArmSpeed(double speed) {
-
-		leftMotor.set(speed);
-		rightMotor.set(speed);
-
-	}
-
-	public void setMotors(double rightSpeed, double leftSpeed) {
+	private void setMotors(double rightSpeed, double leftSpeed) {
 		leftMotor.set(movePid(leftSpeed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
 		rightMotor.set(movePid(rightSpeed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
 	}
 
-	public void setMotors(double speed) {
+	private void setMotors(double speed) {
 		setMotors(speed, speed);
 	}
 

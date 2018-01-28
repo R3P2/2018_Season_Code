@@ -32,13 +32,21 @@ public class TurnToAngle extends Command {
 		currentAngle = gyro.getSplitAngle();
 
 		double speed = ((Math.abs(angle) - Math.abs(currentAngle)) / 165);
-		
+
 		if (currentAngle < angle) {
-			// turning right
-			// left forward, right backward
-			Robot.chassisSubsystem.setMotors(-speed, speed);
+
+			// The current angle is smaller than the target angle
+			// We need to turn right to increase our angle to match the target angle
+
+			Robot.chassisSubsystem.setMovement(0, speed);
+
 		} else {
-			Robot.chassisSubsystem.setMotors(speed, -speed);
+
+			// The current angle is larger than the target angle
+			// We need to turn left to decrease our angle to match the target angle
+
+			Robot.chassisSubsystem.setMovement(0, -speed);
+
 		}
 
 	}
@@ -52,7 +60,7 @@ public class TurnToAngle extends Command {
 
 	// Called once after isFinished returns true
 	protected void end() {
-		Robot.chassisSubsystem.setMotors(0);
+		Robot.chassisSubsystem.setMovement(0, 0);
 	}
 
 	// Called when another command which requires one or more of the same
