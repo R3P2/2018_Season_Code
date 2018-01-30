@@ -15,8 +15,12 @@ public class OI {
 		
 	GameController gameController = new XBoxController(0);
 
-	public boolean isPistons(){
-		return gameController.isADown();
+	public boolean enableTurbo(){
+		return gameController.isRightBumperDown();
+	}
+	
+	public boolean disableTurbo() {
+		return gameController.isLeftBumperDown();
 	}
 	
 	public double getSpeed(){

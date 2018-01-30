@@ -31,6 +31,12 @@ public class JoystickCommand extends Command {
 		boolean startAcceleration = oi.isAccelerating();
 		boolean stopAcceleration = oi.isNotAccelerating();
 
+		boolean enableTurbo = oi.enableTurbo();
+		boolean disableTurbo = oi.disableTurbo();
+		
+		double speed = oi.getSpeed();
+		double turn = oi.getTurn();
+		
 		if (startAcceleration) {
 			isAccelerating = true;
 		}
@@ -39,10 +45,16 @@ public class JoystickCommand extends Command {
 			isAccelerating = false;
 		}
 
+		if (enableTurbo) {
+			chassisSubsystem.setTurbo(true);
+		} else if (disableTurbo) {
+			chassisSubsystem.setTurbo(false);
+		}
+		
 		if (isAccelerating) {
-			chassisSubsystem.setAcceleration(oi.getSpeed(), oi.getTurn());
+			chassisSubsystem.setAcceleration(speed, turn);
 		} else {
-			chassisSubsystem.setMovement(oi.getSpeed(), oi.getTurn());
+			chassisSubsystem.setMovement(speed, turn);
 		}
 	}
 

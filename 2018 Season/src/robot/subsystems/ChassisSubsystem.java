@@ -43,7 +43,7 @@ public class ChassisSubsystem extends Subsystem {
 		leftMotor.setInverted(true);
 	}
 
-	public void setPistons(boolean state) {
+	public void setTurbo(boolean state) {
 		// PistonOne.set(state ? Value.kForward : Value.kReverse);
 		PistonTwo.set(state ? Value.kForward : Value.kReverse);
 	}
