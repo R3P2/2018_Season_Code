@@ -1,5 +1,6 @@
 package robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -64,7 +65,9 @@ public class ChassisSubsystem extends Subsystem {
 	}
 
 	private void setMotors(double rightSpeed, double leftSpeed) {
-		
+		//Talon Motors
+		leftMotor.set(ControlMode.PercentOutput, movePid(leftSpeed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
+		rightMotor.set(ControlMode.PercentOutput, movePid(leftSpeed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
 //		leftMotor.set(movePid(leftSpeed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
 //		rightMotor.set(movePid(rightSpeed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
 	}
