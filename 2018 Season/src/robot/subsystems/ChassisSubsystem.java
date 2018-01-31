@@ -21,9 +21,10 @@ public class ChassisSubsystem extends Subsystem {
 	DoubleSolenoid PistonTwo = new DoubleSolenoid(2, 3);
 
 	// Our talon speed controlers. Only uncomment when talons are connected:
-	 TalonSRX leftMotor = new TalonSRX(1);
-	 TalonSRX rightMotor = new TalonSRX(0);
-
+	 TalonSRX leftMotor1 = new TalonSRX(1);
+	 TalonSRX leftMotor2 = new TalonSRX(0);
+	 TalonSRX rightMotor1 = new TalonSRX(2);
+	 TalonSRX rightMotor2 = new TalonSRX(3);
 	// Our Victor speed controllers. Only uncomment when victors are connected:
 //	Victor leftMotor = new Victor(0);
 //	Victor rightMotor = new Victor(1);
@@ -43,7 +44,8 @@ public class ChassisSubsystem extends Subsystem {
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
 		setDefaultCommand(new JoystickCommand());
-		leftMotor.setInverted(true);
+		leftMotor1.setInverted(true);
+		leftMotor2.setInverted(true);
 	}
 
 	public void setTurbo(boolean state) {
@@ -66,8 +68,10 @@ public class ChassisSubsystem extends Subsystem {
 
 	private void setMotors(double rightSpeed, double leftSpeed) {
 		//Talon Motors
-		leftMotor.set(ControlMode.PercentOutput, movePid(leftSpeed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
-		rightMotor.set(ControlMode.PercentOutput, movePid(leftSpeed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
+		leftMotor1.set(ControlMode.PercentOutput, movePid(leftSpeed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
+		leftMotor2.set(ControlMode.PercentOutput, movePid(leftSpeed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
+		rightMotor1.set(ControlMode.PercentOutput, movePid(rightSpeed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
+		rightMotor2.set(ControlMode.PercentOutput, movePid(rightSpeed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
 //		leftMotor.set(movePid(leftSpeed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
 //		rightMotor.set(movePid(rightSpeed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
 	}
