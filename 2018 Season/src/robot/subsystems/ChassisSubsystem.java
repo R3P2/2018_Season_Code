@@ -1,5 +1,7 @@
 package robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Encoder;
@@ -18,12 +20,12 @@ public class ChassisSubsystem extends Subsystem {
 	DoubleSolenoid PistonTwo = new DoubleSolenoid(2, 3);
 
 	// Our talon speed controlers. Only uncomment when talons are connected:
-	// TalonSRX leftMotor = new TalonSRX(1);
-	// TalonSRX rightMotor = new TalonSRX(0);
+	 TalonSRX leftMotor = new TalonSRX(1);
+	 TalonSRX rightMotor = new TalonSRX(0);
 
 	// Our Victor speed controllers. Only uncomment when victors are connected:
-	Victor leftMotor = new Victor(0);
-	Victor rightMotor = new Victor(1);
+//	Victor leftMotor = new Victor(0);
+//	Victor rightMotor = new Victor(1);
 
 	Encoder leftEncoder = new Encoder(0, 1);
 	Encoder rightEncoder = new Encoder(2, 3, true);
@@ -62,8 +64,9 @@ public class ChassisSubsystem extends Subsystem {
 	}
 
 	private void setMotors(double rightSpeed, double leftSpeed) {
-		leftMotor.set(movePid(leftSpeed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
-		rightMotor.set(movePid(rightSpeed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
+		
+//		leftMotor.set(movePid(leftSpeed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
+//		rightMotor.set(movePid(rightSpeed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
 	}
 
 	private void setMotors(double speed) {
