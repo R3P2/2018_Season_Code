@@ -30,6 +30,7 @@ public class JoystickCommand extends Command {
 
 		
 		System.out.println("Left Encoder: " + chassisSubsystem.getLeftEncoderCounts());
+		System.out.println("Right Encoder: " + chassisSubsystem.getRightEncoderCounts());
 		
 		boolean startAcceleration = oi.isAccelerating();
 		boolean stopAcceleration = oi.isNotAccelerating();
