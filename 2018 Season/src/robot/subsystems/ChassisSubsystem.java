@@ -1,6 +1,7 @@
 package robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -21,12 +22,13 @@ public class ChassisSubsystem extends Subsystem {
 	DoubleSolenoid PistonTwo = new DoubleSolenoid(2, 3);
 
 	// Our talon speed controlers. Only uncomment when talons are connected:
-	 TalonSRX leftMotor = new TalonSRX(1);
-	 TalonSRX rightMotor = new TalonSRX(0);
+	TalonSRX leftMotor_One = new TalonSRX(1);
+	TalonSRX leftMotor_Two = new TalonSRX(2);
 
-	// Our Victor speed controllers. Only uncomment when victors are connected:
-//	Victor leftMotor = new Victor(0);
-//	Victor rightMotor = new Victor(1);
+	TalonSRX rightMotor_One = new TalonSRX(3);
+	TalonSRX rightMotor_Two = new TalonSRX(4);
+
+	Victor climbMotor = new Victor(9);
 
 	Encoder leftEncoder = new Encoder(0, 1);
 	Encoder rightEncoder = new Encoder(2, 3, true);
@@ -43,7 +45,12 @@ public class ChassisSubsystem extends Subsystem {
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
 		setDefaultCommand(new JoystickCommand());
-		leftMotor.setInverted(true);
+		leftMotor_One.setInverted(true);
+		leftMotor_Two.setInverted(true);
+
+		leftMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+		rightMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+
 	}
 
 	public void setTurbo(boolean state) {
@@ -51,25 +58,63 @@ public class ChassisSubsystem extends Subsystem {
 		PistonTwo.set(state ? Value.kForward : Value.kReverse);
 	}
 
-	public double getEncoderCounts() {
+	public double getLeftEncoderCounts() {
 
-		return (leftEncoder.getDistance() + rightEncoder.getDistance()) / 2;
+		return leftMotor_One.getSelectedSensorPosition(0);
 
+	}
+
+	public double getRightEncoderCounts() {
+
+		return rightMotor_One.getSelectedSensorPosition(0);
+
+	}
+	
+	public double getEncoderCounts () {
+		
+		return (getLeftEncoderCounts() + getRightEncoderCounts()) / 2;
+		
 	}
 
 	public void resetEncoders() {
 
-		leftEncoder.reset();
-		rightEncoder.reset();
+		leftMotor_One.setSelectedSensorPosition(0, 0, 0);
+		leftMotor_One.setSelectedSensorPosition(0, 0, 0);
+
+	}
+
+	public void setClimbMotors(double speed) {
+
+		climbMotor.set(speed);
+
+	}
+
+	private void setLeftMotors(double speed) {
+
+		leftMotor_One.set(ControlMode.PercentOutput,
+				movePid(speed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
+		leftMotor_Two.set(ControlMode.PercentOutput,
+				movePid(speed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
+
+	}
+
+	private void setRightMotors(double speed) {
+
+		rightMotor_One.set(ControlMode.PercentOutput,
+				movePid(speed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
+		rightMotor_Two.set(ControlMode.PercentOutput,
+				movePid(speed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
 
 	}
 
 	private void setMotors(double rightSpeed, double leftSpeed) {
-		//Talon Motors
-		leftMotor.set(ControlMode.PercentOutput, movePid(leftSpeed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
-		rightMotor.set(ControlMode.PercentOutput, movePid(leftSpeed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
-//		leftMotor.set(movePid(leftSpeed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
-//		rightMotor.set(movePid(rightSpeed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
+		// Talon Motors
+		setLeftMotors(leftSpeed);
+		setRightMotors(rightSpeed);
+		// leftMotor.set(movePid(leftSpeed, leftEncoder.getDistance(),
+		// RobotMap.MAX_LEFT_ENCODER_SPEED));
+		// rightMotor.set(movePid(rightSpeed, rightEncoder.getDistance(),
+		// RobotMap.MAX_RIGHT_ENCODER_SPEED));
 	}
 
 	private void setMotors(double speed) {

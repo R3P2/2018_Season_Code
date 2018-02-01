@@ -7,39 +7,54 @@
 
 package OI;
 
+import robot.RobotMap;
+
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-		
+
 	GameController gameController = new XBoxController(0);
 
-	public boolean enableTurbo(){
+	public boolean enableTurbo() {
 		return gameController.isRightBumperDown();
 	}
-	
+
 	public boolean disableTurbo() {
 		return gameController.isLeftBumperDown();
 	}
-	
-	public double getSpeed(){
+
+	public double getSpeed() {
 		return gameController.getLeftYAxis();
 	}
-	
-	public double getTurn(){
+
+	public double getTurn() {
 		return gameController.getRightXAxis();
 	}
-	
-	public double getClimb(){
+
+	public double getClimb() {
 		return gameController.getRightYAxis();
 	}
-	
-	public boolean isAccelerating(){
+
+	public boolean isAccelerating() {
 		return gameController.isADown();
 	}
-	
-	public boolean isNotAccelerating(){
+
+	public boolean isNotAccelerating() {
 		return gameController.isXDown();
 	}
+	
+	public boolean resetEncoders () {
+		return gameController.isYDown();
+	}
+
+	public double getClimbSpeed() {
+		if (gameController.getRightTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
+			return gameController.getRightTriggerAxis();
+		} else {
+			return -gameController.getLeftTriggerAxis();
+		}
+	}
+
 }

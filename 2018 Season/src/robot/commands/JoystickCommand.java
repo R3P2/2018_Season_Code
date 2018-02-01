@@ -28,14 +28,21 @@ public class JoystickCommand extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
 
+		
+		System.out.println("Left Encoder: " + chassisSubsystem.getLeftEncoderCounts());
+		
 		boolean startAcceleration = oi.isAccelerating();
 		boolean stopAcceleration = oi.isNotAccelerating();
 
 		boolean enableTurbo = oi.enableTurbo();
 		boolean disableTurbo = oi.disableTurbo();
 		
+		boolean resetEncoders = oi.resetEncoders();
+		
 		double speed = oi.getSpeed();
 		double turn = oi.getTurn();
+		
+		double climbSpeed = oi.getClimbSpeed();
 		
 		if (startAcceleration) {
 			isAccelerating = true;
@@ -51,11 +58,18 @@ public class JoystickCommand extends Command {
 			chassisSubsystem.setTurbo(false);
 		}
 		
+		if (resetEncoders) {
+			chassisSubsystem.resetEncoders();
+		}
+		
 		if (isAccelerating) {
 			chassisSubsystem.setAcceleration(speed, turn);
 		} else {
 			chassisSubsystem.setMovement(speed, turn);
 		}
+		
+		chassisSubsystem.setClimbMotors(climbSpeed);
+		
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
