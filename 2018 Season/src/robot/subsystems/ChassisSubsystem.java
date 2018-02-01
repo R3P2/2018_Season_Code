@@ -22,6 +22,7 @@ public class ChassisSubsystem extends Subsystem {
 	DoubleSolenoid PistonTwo = new DoubleSolenoid(2, 3);
 
 	// Our talon speed controlers. Only uncomment when talons are connected:
+
 	TalonSRX leftMotor_One = new TalonSRX(1);
 	TalonSRX leftMotor_Two = new TalonSRX(2);
 
@@ -45,6 +46,7 @@ public class ChassisSubsystem extends Subsystem {
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
 		setDefaultCommand(new JoystickCommand());
+
 		leftMotor_One.setInverted(true);
 		leftMotor_Two.setInverted(true);
 
@@ -108,6 +110,7 @@ public class ChassisSubsystem extends Subsystem {
 	}
 
 	private void setMotors(double rightSpeed, double leftSpeed) {
+
 		// Talon Motors
 		setLeftMotors(leftSpeed);
 		setRightMotors(rightSpeed);
@@ -115,6 +118,7 @@ public class ChassisSubsystem extends Subsystem {
 		// RobotMap.MAX_LEFT_ENCODER_SPEED));
 		// rightMotor.set(movePid(rightSpeed, rightEncoder.getDistance(),
 		// RobotMap.MAX_RIGHT_ENCODER_SPEED));
+
 	}
 
 	private void setMotors(double speed) {
