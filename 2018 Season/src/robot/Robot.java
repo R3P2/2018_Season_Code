@@ -7,12 +7,14 @@
 
 package robot;
 
+import OI.AutoSelector;
 import OI.OI;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import robot.commands.AutoCommand;
 import robot.subsystems.ChassisSubsystem;
 
 /**
@@ -26,8 +28,7 @@ public class Robot extends IterativeRobot {
 	public static final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
 	public static OI oi;
 	
-	Command m_autonomousCommand;
-	SendableChooser<Command> m_chooser = new SendableChooser<>();
+	AutoCommand autonomousCommand;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -37,7 +38,8 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		oi = new OI();
 		// chooser.addObject("My Auto", new MyAutoCommand());
-		SmartDashboard.putData("Auto mode", m_chooser);
+		//SmartDashboard.putData("Auto mode", robotPosition);
+		updateSmartDashboard();
 	}
 
 	/**
@@ -47,12 +49,13 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
-
+		updateSmartDashboard();
 	}
 
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
+		updateSmartDashboard();
 	}
 
 	/**
@@ -68,7 +71,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		m_autonomousCommand = m_chooser.getSelected();
+		//autonomousCommand = robotPosition.getSelected();
 
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -78,9 +81,10 @@ public class Robot extends IterativeRobot {
 		 */
 
 		// schedule the autonomous command (example)
-		if (m_autonomousCommand != null) {
-			m_autonomousCommand.start();
+		if (autonomousCommand != null) {
+			autonomousCommand.start();
 		}
+		updateSmartDashboard();
 	}
 
 	/**
@@ -89,6 +93,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		updateSmartDashboard();
 	}
 
 	@Override
@@ -97,9 +102,10 @@ public class Robot extends IterativeRobot {
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
-		if (m_autonomousCommand != null) {
-			m_autonomousCommand.cancel();
+		if (autonomousCommand != null) {
+			autonomousCommand.cancel();
 		}
+		updateSmartDashboard();
 	}
 
 	/**
@@ -108,6 +114,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+		updateSmartDashboard();
 	}
 
 	/**
@@ -115,5 +122,10 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
+		updateSmartDashboard();
+	}
+
+	public void updateSmartDashboard(){
+		oi.autoSelector.updateSmartDashboard();
 	}
 }
