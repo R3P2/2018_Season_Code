@@ -28,7 +28,6 @@ public class Robot extends IterativeRobot {
 	public static final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
 	public static OI oi;
 	
-	//autonomous command
 	AutoCommand autonomousCommand;
 
 	/**
