@@ -93,19 +93,19 @@ public class ChassisSubsystem extends Subsystem {
 
 	private void setLeftMotors(double speed) {
 
-		leftMotor_One.set(ControlMode.PercentOutput,
-				movePid(speed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
-		leftMotor_Two.set(ControlMode.PercentOutput,
-				movePid(speed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
+		leftMotor_One.set(ControlMode.PercentOutput, speed);
+				//movePid(speed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
+		leftMotor_Two.set(ControlMode.PercentOutput, speed);
+				//movePid(speed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
 
 	}
 
 	private void setRightMotors(double speed) {
 
-		rightMotor_One.set(ControlMode.PercentOutput,
-				movePid(speed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
-		rightMotor_Two.set(ControlMode.PercentOutput,
-				movePid(speed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
+		rightMotor_One.set(ControlMode.PercentOutput,speed);
+				//movePid(speed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
+		rightMotor_Two.set(ControlMode.PercentOutput,speed);
+				//movePid(speed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
 
 	}
 
