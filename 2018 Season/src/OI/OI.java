@@ -54,8 +54,10 @@ public class OI {
 	public double getClimbSpeed() {
 		if (gameController.getRightTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 			return gameController.getRightTriggerAxis();
-		} else {
+		} else if (gameController.getLeftTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD){
 			return -gameController.getLeftTriggerAxis();
+		} else {
+			return 0;
 		}
 	}
 

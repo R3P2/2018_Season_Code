@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import robot.Robot;
 import robot.RobotMap;
 import robot.commands.JoystickCommand;
 import robot.util.Gyro;
@@ -18,16 +19,15 @@ import robot.util.Gyro;
  */
 public class ChassisSubsystem extends Subsystem {
 
-	// DoubleSolenoid PistonOne = new DoubleSolenoid(0, 1);
-	DoubleSolenoid PistonTwo = new DoubleSolenoid(2, 3);
+	DoubleSolenoid pancakeShifter = new DoubleSolenoid(1, 3);
 
 	// Our talon speed controlers. Only uncomment when talons are connected:
 
-	TalonSRX leftMotor_One = new TalonSRX(1);
-	TalonSRX leftMotor_Two = new TalonSRX(2);
+	TalonSRX leftMotor_One = new TalonSRX(RobotMap.LEFT_MOTOR_PORT_ONE);
+	TalonSRX leftMotor_Two = new TalonSRX(RobotMap.LEFT_MOTOR_PORT_TWO);
 
-	TalonSRX rightMotor_One = new TalonSRX(3);
-	TalonSRX rightMotor_Two = new TalonSRX(4);
+	TalonSRX rightMotor_One = new TalonSRX(RobotMap.RIGHT_MOTOR_PORT_ONE);
+	TalonSRX rightMotor_Two = new TalonSRX(RobotMap.RIGHT_MOTOR_PORT_TWO);
 
 	Victor climbMotor = new Victor(9);
 
@@ -57,7 +57,7 @@ public class ChassisSubsystem extends Subsystem {
 
 	public void setTurbo(boolean state) {
 		// PistonOne.set(state ? Value.kForward : Value.kReverse);
-		PistonTwo.set(state ? Value.kForward : Value.kReverse);
+		pancakeShifter.set(state ? Value.kForward : Value.kReverse);
 	}
 
 	public double getLeftEncoderCounts() {
