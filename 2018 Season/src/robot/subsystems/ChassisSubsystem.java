@@ -153,9 +153,10 @@ public class ChassisSubsystem extends Subsystem {
 
 	public void setAcceleration(double speed, double turn) {
 
-		double dabs_speed, daccspeed;
+		double dabs_speed, dabs_turn, daccspeed;
 
 		dabs_speed = Math.abs(speed);
+		dabs_turn = Math.abs(turn);
 
 		if (m_dPrevSpeed < RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 			if (dabs_speed < RobotMap.JOYSTICK_NOISE_THRESHOLD) {
@@ -181,8 +182,23 @@ public class ChassisSubsystem extends Subsystem {
 			}
 		}
 
-		setMovement(daccspeed, turn);
+		if (dabs_turn < 0 && dabs_speed > 0) {
+			setMotors(daccspeed, daccspeed);
+		} else if (dabs_turn > 0 && dabs_speed > 0) {
 
+			if (turn > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
+				setMotors(daccspeed, (1 - turn) * daccspeed);
+			} else {
+				setMotors((1 - dabs_turn) * daccspeed, daccspeed);
+			}
+		} else if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
+
+			setMotors(-turn, turn);
+
+		} else {
+			setMotors(0);
+		}
+		
 		m_dPrevSpeed = dabs_speed;
 	}
 
