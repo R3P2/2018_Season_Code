@@ -14,7 +14,9 @@ import robot.RobotMap;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-
+	
+	public AutoSelector autoSelector = new AutoSelector();
+	
 	GameController gameController = new XBoxController(0);
 
 	public boolean enableTurbo() {
@@ -52,8 +54,10 @@ public class OI {
 	public double getClimbSpeed() {
 		if (gameController.getRightTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 			return gameController.getRightTriggerAxis();
-		} else {
+		} else if (gameController.getLeftTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD){
 			return -gameController.getLeftTriggerAxis();
+		} else {
+			return 0;
 		}
 	}
 
