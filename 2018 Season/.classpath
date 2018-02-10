@@ -10,7 +10,6 @@
 	<classpathentry kind="var" path="USERLIBS_DIR/toronto-0.1.jar"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/CTRE_Phoenix-sources.jar"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/CTRE_Phoenix.jar"/>
-	<classpathentry kind="var" path="USERLIBS_DIR/CTRLib.jar"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/toronto-v0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

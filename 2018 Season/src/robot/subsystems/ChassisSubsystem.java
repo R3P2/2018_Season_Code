@@ -136,7 +136,7 @@ public class ChassisSubsystem extends Subsystem {
 			setMotors(speed, speed);
 		} else if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD && dabs_speed > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 
-			if (turn > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
+			if (turn > 0.0) {
 				setMotors(speed, (1 - turn) * speed);
 			} else {
 				setMotors((1 - dabs_turn) * speed, speed);
@@ -151,41 +151,104 @@ public class ChassisSubsystem extends Subsystem {
 
 	}
 
-	public void setAcceleration(double speed, double turn) {
-
-		double dabs_speed, daccspeed;
-
-		dabs_speed = Math.abs(speed);
-
-		if (m_dPrevSpeed < RobotMap.JOYSTICK_NOISE_THRESHOLD) {
-			if (dabs_speed < RobotMap.JOYSTICK_NOISE_THRESHOLD) {
-				m_nAccelCount = 0;
-				daccspeed = 0;
-			} else {
-				m_nAccelCount++;
-				daccspeed = m_nAccelCount * m_dSpeedAdvInc;
-				if (speed < 0)
-					daccspeed = -daccspeed;
-			}
-		} else {
-			if (m_nAccelCount < m_nAccelCycles) {
-				m_nAccelCount++;
-				daccspeed = m_nAccelCount * m_dSpeedAdvInc;
-				if (speed < 0)
-					daccspeed = -daccspeed;
-				if (Math.abs(daccspeed) > dabs_speed) {
-					daccspeed = speed;
-				}
-			} else {
-				daccspeed = speed;
-			}
-		}
-
-		setMovement(daccspeed, turn);
-
-		m_dPrevSpeed = dabs_speed;
+	/*
+	 * Speed filter procedure:
+	 * RAMPS towards any change in speed using the m_dSpeedAdvInc.
+	 * RAMPS towards any abrupt changes in direction the same way
+	 * DOES NOT RAMP if the speed drops to ZERO
+	 * 
+	 * Changes on Feb 10, 2018:
+	 * The ramp-up from 0 is taking too long and we think that
+	 * 
+	 */
+	public double FilteredSpeed(double dJSSpeed)
+	{
+		double dInputSpeed, dOutputSpeed, diff;
+		
+		// If Joystick speed (JS) is < threshold dInputSpeed is ZERO
+		// If there has been a direction change, we do NOT want to RAMP the 
+		// speed down and then start ramping up in the opposite direction.
+		// Instead, we will STOP (drop dInputSpeed to ZERO) and in the
+		// subsequent cycles, ramp towards the new speed in the other direction.
+		
+		if (Math.abs(dJSSpeed) < RobotMap.JOYSTICK_NOISE_THRESHOLD)
+			dInputSpeed = 0.0;
+		else
+			dInputSpeed = dJSSpeed;
+		
+		// Take the difference between the new speed and the
+		// the speed of the last cycle.
+		diff =  dInputSpeed - m_dPrevSpeed;
+		
+		// We want to move towards the current "dInputSpeed"
+		// using the "m_dSpeedAdvInc"
+		if (Math.abs(diff) <= m_dSpeedAdvInc ) 		// We are within an acceptable window
+			dOutputSpeed = dInputSpeed;				// So just stay there.
+		else if (diff > 0)	// We are speeding up
+			dOutputSpeed = m_dPrevSpeed + m_dSpeedAdvInc;			
+		else 				// We are slowing down
+			dOutputSpeed = m_dPrevSpeed - m_dSpeedAdvInc;
+			
+		m_dPrevSpeed = dOutputSpeed;
+		
+		return dOutputSpeed;
 	}
 
+	public void setAcceleration(double speed, double turn) {
+
+		double daccspeed, dabs_turn;
+		boolean blMoving;
+		
+		daccspeed = FilteredSpeed(speed);
+		if (Math.abs(daccspeed) > 0)
+			blMoving = true;
+		else
+			blMoving = false;
+		
+		dabs_turn = Math.abs(turn);
+		
+		// Modified version of "setMovement" block
+		// We do not want the speed cut off if it is below the noise threshold
+		// because the first stage of the acceleration will produce speeds 
+		// below the noise.
+		
+		if (blMoving == true)
+		{
+			if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD)
+			{
+				// We are moving AND turning.
+				// We need the turn direction:
+				if (turn > 0) 
+				{
+					setMotors(daccspeed, (1 - turn) * daccspeed);
+				} 
+				else 
+				{
+					setMotors((1 - dabs_turn) * daccspeed, daccspeed);
+				}				
+			}
+			else
+			{
+				// Not turning. Just moving:
+				setMotors(daccspeed, daccspeed);
+			}
+		}
+		else
+		{
+			if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD)
+			{
+				// We are turning and NOT moving (rotating)
+				setMotors(-turn, turn);
+			}
+			else
+			{
+				// Not doing anything:
+				setMotors(0,0);
+			}
+		}
+	}
+	
+	
 	public double movePid(double speed, double feedback, double maxSpeed) {
 
 		double normalizedFeedback = feedback / maxSpeed;
