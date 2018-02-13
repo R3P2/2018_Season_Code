@@ -80,7 +80,6 @@ public class AutoSelector {
 		SmartDashboard.putData("Robot Behaviour", robotBehaviour);
 		SmartDashboard.putData("Alliance Switch", allianceSwitchSide);
 		SmartDashboard.putData("Alliance Scale", allianceScaleSide);
-
 	}
 	
 }

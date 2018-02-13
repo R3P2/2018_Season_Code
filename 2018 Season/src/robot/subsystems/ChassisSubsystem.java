@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import robot.Robot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import robot.RobotMap;
 import robot.commands.JoystickCommand;
 import robot.util.Gyro;
@@ -28,6 +28,10 @@ public class ChassisSubsystem extends Subsystem {
 
 	TalonSRX rightMotor_One = new TalonSRX(RobotMap.RIGHT_MOTOR_PORT_ONE);
 	TalonSRX rightMotor_Two = new TalonSRX(RobotMap.RIGHT_MOTOR_PORT_TWO);
+	
+	TalonSRX armLiftMotor = new TalonSRX(RobotMap.ARM_LIFT_MOTOR_PORT);
+	TalonSRX intakeMotor_One = new TalonSRX(RobotMap.INTAKE_MOTOR_ONE_PORT);
+	TalonSRX intakeMotor_Two = new TalonSRX(RobotMap.INTAKE_MOTOR_TWO_PORT);
 
 	Victor climbMotor = new Victor(9);
 
@@ -52,9 +56,20 @@ public class ChassisSubsystem extends Subsystem {
 
 		leftMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		rightMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+		
+		gyro.calibrate();
 
 	}
 
+	public void setLiftSpeed(double speed){
+		armLiftMotor.set(ControlMode.PercentOutput, speed);
+	}
+	
+	public void setIntakeSpeed(double speed){
+		intakeMotor_One.set(ControlMode.PercentOutput, speed);
+		intakeMotor_Two.set(ControlMode.PercentOutput, speed);
+	}
+	
 	public void setTurbo(boolean state) {
 		// PistonOne.set(state ? Value.kForward : Value.kReverse);
 		pancakeShifter.set(state ? Value.kForward : Value.kReverse);
@@ -276,4 +291,10 @@ public class ChassisSubsystem extends Subsystem {
 
 	}
 
+	public void updateSmartDashboard(){
+		SmartDashboard.putNumber("Gyro", gyro.getAngle());
+		System.out.println(gyro.getAngle());
+//		System.out.println("Left Encoder: " + chassisSubsystem.getLeftEncoderCounts());
+//		System.out.println("Right Encoder: " + chassisSubsystem.getRightEncoderCounts());
+	}
 }

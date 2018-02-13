@@ -25,6 +25,10 @@ public class RobotMap {
 	public final static int RIGHT_ENCODER_PORT_ONE = 2;
 	public final static int RIGHT_ENCODER_PORT_TWO = 3;
 	
+	public final static int ARM_LIFT_MOTOR_PORT = 6;
+	public final static int INTAKE_MOTOR_ONE_PORT = 7;
+	public final static int INTAKE_MOTOR_TWO_PORT = 8;
+	
 	public final static double KP = 0.1;
 	
 	public final static int MAX_LEFT_ENCODER_SPEED = 2000;

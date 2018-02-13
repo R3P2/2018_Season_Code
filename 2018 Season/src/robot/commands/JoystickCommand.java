@@ -26,12 +26,7 @@ public class JoystickCommand extends Command {
 	}
 
 	// Called repeatedly when this Command is scheduled to run
-	protected void execute() {
-
-		
-		System.out.println("Left Encoder: " + chassisSubsystem.getLeftEncoderCounts());
-		System.out.println("Right Encoder: " + chassisSubsystem.getRightEncoderCounts());
-		
+	protected void execute() {		
 		boolean startAcceleration = oi.isAccelerating();
 		boolean stopAcceleration = oi.isNotAccelerating();
 
