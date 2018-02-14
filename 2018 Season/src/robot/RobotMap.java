@@ -15,19 +15,18 @@ package robot;
  */
 public class RobotMap {
 
+	
 	public final static int LEFT_MOTOR_PORT_ONE = 1;
 	public final static int LEFT_MOTOR_PORT_TWO = 2;
 	public final static int RIGHT_MOTOR_PORT_ONE = 3;
 	public final static int RIGHT_MOTOR_PORT_TWO = 4;
 	
-	public final static int LEFT_ENCODER_PORT_ONE = 0;
-	public final static int LEFT_ENCODER_PORT_TWO = 1;
-	public final static int RIGHT_ENCODER_PORT_ONE = 2;
-	public final static int RIGHT_ENCODER_PORT_TWO = 3;
-	
 	public final static int ARM_LIFT_MOTOR_PORT = 6;
 	public final static int INTAKE_MOTOR_ONE_PORT = 7;
 	public final static int INTAKE_MOTOR_TWO_PORT = 8;
+	
+	public final static int SOLENOID_PORT_ONE = 0;
+	public final static int SOLENOID_PORT_TWO= 1;
 	
 	public final static double KP = 0.1;
 	

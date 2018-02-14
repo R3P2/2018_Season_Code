@@ -19,7 +19,7 @@ import robot.util.Gyro;
  */
 public class ChassisSubsystem extends Subsystem {
 
-	DoubleSolenoid pancakeShifter = new DoubleSolenoid(1, 3);
+	DoubleSolenoid pancakeShifter = new DoubleSolenoid(0, 1);
 
 	// Our talon speed controlers. Only uncomment when talons are connected:
 
@@ -28,15 +28,14 @@ public class ChassisSubsystem extends Subsystem {
 
 	TalonSRX rightMotor_One = new TalonSRX(RobotMap.RIGHT_MOTOR_PORT_ONE);
 	TalonSRX rightMotor_Two = new TalonSRX(RobotMap.RIGHT_MOTOR_PORT_TWO);
-	
+
 	TalonSRX armLiftMotor = new TalonSRX(RobotMap.ARM_LIFT_MOTOR_PORT);
 	TalonSRX intakeMotor_One = new TalonSRX(RobotMap.INTAKE_MOTOR_ONE_PORT);
 	TalonSRX intakeMotor_Two = new TalonSRX(RobotMap.INTAKE_MOTOR_TWO_PORT);
 
 	Victor climbMotor = new Victor(9);
 
-	Encoder leftEncoder = new Encoder(0, 1);
-	Encoder rightEncoder = new Encoder(2, 3, true);
+	Encoder climbEncoder = new Encoder(2, 3, true);
 
 	double m_dPrevSpeed = 0;
 	double m_dAccelTime_s = 4.0;
@@ -56,20 +55,20 @@ public class ChassisSubsystem extends Subsystem {
 
 		leftMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		rightMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
-		
+
 		gyro.calibrate();
 
 	}
 
-	public void setLiftSpeed(double speed){
+	public void setLiftSpeed(double speed) {
 		armLiftMotor.set(ControlMode.PercentOutput, speed);
 	}
-	
-	public void setIntakeSpeed(double speed){
+
+	public void setIntakeSpeed(double speed) {
 		intakeMotor_One.set(ControlMode.PercentOutput, speed);
 		intakeMotor_Two.set(ControlMode.PercentOutput, speed);
 	}
-	
+
 	public void setTurbo(boolean state) {
 		// PistonOne.set(state ? Value.kForward : Value.kReverse);
 		pancakeShifter.set(state ? Value.kForward : Value.kReverse);
@@ -87,40 +86,53 @@ public class ChassisSubsystem extends Subsystem {
 
 	}
 	
-	public double getEncoderCounts () {
-		
-		return (getLeftEncoderCounts() + getRightEncoderCounts()) / 2;
-		
+	public int getRightEncoderRate(){
+		return rightMotor_One.getSelectedSensorVelocity(0);
+	}
+	
+	public int getLeftEncoderRate(){
+		return leftMotor_One.getSelectedSensorVelocity(0);
 	}
 
-	public void resetEncoders() {
+	public double getEncoderCounts() {
 
-		leftMotor_One.setSelectedSensorPosition(0, 0, 0);
-		leftMotor_One.setSelectedSensorPosition(0, 0, 0);
+		return (getLeftEncoderCounts() + getRightEncoderCounts()) / 2;
+
+	}
+
+	public void resetClimbEncoder() {
+
+		climbEncoder.reset();
 
 	}
 
 	public void setClimbMotors(double speed) {
 
-		climbMotor.set(speed);
+		if (climbEncoder.getDistance() < 4000 && speed > 0) {
+			climbMotor.set(speed);
+		} else if (speed < 0) {
+			climbMotor.set(speed);
+		} else {
+			climbMotor.set(0);
+		}
 
 	}
 
 	private void setLeftMotors(double speed) {
 
-		leftMotor_One.set(ControlMode.PercentOutput, speed);
-				//movePid(speed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
-		leftMotor_Two.set(ControlMode.PercentOutput, speed);
-				//movePid(speed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
+		leftMotor_One.set(ControlMode.PercentOutput, movePid(speed, getLeftEncoderRate(),
+		RobotMap.MAX_LEFT_ENCODER_SPEED));
+		leftMotor_Two.set(ControlMode.PercentOutput, movePid(speed, getLeftEncoderRate(),
+		RobotMap.MAX_RIGHT_ENCODER_SPEED));
 
 	}
 
 	private void setRightMotors(double speed) {
 
-		rightMotor_One.set(ControlMode.PercentOutput,speed);
-				//movePid(speed, leftEncoder.getDistance(), RobotMap.MAX_LEFT_ENCODER_SPEED));
-		rightMotor_Two.set(ControlMode.PercentOutput,speed);
-				//movePid(speed, rightEncoder.getDistance(), RobotMap.MAX_RIGHT_ENCODER_SPEED));
+		rightMotor_One.set(ControlMode.PercentOutput, movePid(speed, getRightEncoderRate(),
+		RobotMap.MAX_LEFT_ENCODER_SPEED));
+		rightMotor_Two.set(ControlMode.PercentOutput, movePid(speed, getRightEncoderRate(),
+		RobotMap.MAX_RIGHT_ENCODER_SPEED));
 
 	}
 
@@ -167,45 +179,44 @@ public class ChassisSubsystem extends Subsystem {
 	}
 
 	/*
-	 * Speed filter procedure:
-	 * RAMPS towards any change in speed using the m_dSpeedAdvInc.
-	 * RAMPS towards any abrupt changes in direction the same way
-	 * DOES NOT RAMP if the speed drops to ZERO
+	 * Speed filter procedure: RAMPS towards any change in speed using the
+	 * m_dSpeedAdvInc. RAMPS towards any abrupt changes in direction the same
+	 * way DOES NOT RAMP if the speed drops to ZERO
 	 * 
-	 * Changes on Feb 10, 2018:
-	 * The ramp-up from 0 is taking too long and we think that
+	 * Changes on Feb 10, 2018: The ramp-up from 0 is taking too long and we
+	 * think that
 	 * 
 	 */
-	public double FilteredSpeed(double dJSSpeed)
-	{
+	public double FilteredSpeed(double dJSSpeed) {
 		double dInputSpeed, dOutputSpeed, diff;
-		
+
 		// If Joystick speed (JS) is < threshold dInputSpeed is ZERO
-		// If there has been a direction change, we do NOT want to RAMP the 
+		// If there has been a direction change, we do NOT want to RAMP the
 		// speed down and then start ramping up in the opposite direction.
 		// Instead, we will STOP (drop dInputSpeed to ZERO) and in the
 		// subsequent cycles, ramp towards the new speed in the other direction.
-		
+
 		if (Math.abs(dJSSpeed) < RobotMap.JOYSTICK_NOISE_THRESHOLD)
 			dInputSpeed = 0.0;
 		else
 			dInputSpeed = dJSSpeed;
-		
+
 		// Take the difference between the new speed and the
 		// the speed of the last cycle.
-		diff =  dInputSpeed - m_dPrevSpeed;
-		
+		diff = dInputSpeed - m_dPrevSpeed;
+
 		// We want to move towards the current "dInputSpeed"
 		// using the "m_dSpeedAdvInc"
-		if (Math.abs(diff) <= m_dSpeedAdvInc ) 		// We are within an acceptable window
-			dOutputSpeed = dInputSpeed;				// So just stay there.
-		else if (diff > 0)	// We are speeding up
-			dOutputSpeed = m_dPrevSpeed + m_dSpeedAdvInc;			
-		else 				// We are slowing down
-			dOutputSpeed = m_dPrevSpeed - m_dSpeedAdvInc;
-			
+		if (Math.abs(diff) <= m_dSpeedAdvInc) // We are within an acceptable
+												// window
+			dOutputSpeed = dInputSpeed; // So just stay there.
+		else if (diff > 0) // We are speeding up
+			dOutputSpeed = m_dPrevSpeed + m_dSpeedAdvInc;
+		else // We are slowing down
+			dOutputSpeed = m_dPrevSpeed - m_dSpeedAdvInc * 2;
+
 		m_dPrevSpeed = dOutputSpeed;
-		
+
 		return dOutputSpeed;
 	}
 
@@ -213,57 +224,44 @@ public class ChassisSubsystem extends Subsystem {
 
 		double daccspeed, dabs_turn;
 		boolean blMoving;
-		
+
 		daccspeed = FilteredSpeed(speed);
 		if (Math.abs(daccspeed) > 0)
 			blMoving = true;
 		else
 			blMoving = false;
-		
+
 		dabs_turn = Math.abs(turn);
-		
+
 		// Modified version of "setMovement" block
 		// We do not want the speed cut off if it is below the noise threshold
-		// because the first stage of the acceleration will produce speeds 
+		// because the first stage of the acceleration will produce speeds
 		// below the noise.
-		
-		if (blMoving == true)
-		{
-			if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD)
-			{
+
+		if (blMoving == true) {
+			if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 				// We are moving AND turning.
 				// We need the turn direction:
-				if (turn > 0) 
-				{
+				if (turn > 0) {
 					setMotors(daccspeed, (1 - turn) * daccspeed);
-				} 
-				else 
-				{
+				} else {
 					setMotors((1 - dabs_turn) * daccspeed, daccspeed);
-				}				
-			}
-			else
-			{
+				}
+			} else {
 				// Not turning. Just moving:
 				setMotors(daccspeed, daccspeed);
 			}
-		}
-		else
-		{
-			if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD)
-			{
+		} else {
+			if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 				// We are turning and NOT moving (rotating)
 				setMotors(-turn, turn);
-			}
-			else
-			{
+			} else {
 				// Not doing anything:
-				setMotors(0,0);
+				setMotors(0, 0);
 			}
 		}
 	}
-	
-	
+
 	public double movePid(double speed, double feedback, double maxSpeed) {
 
 		double normalizedFeedback = feedback / maxSpeed;
@@ -274,7 +272,7 @@ public class ChassisSubsystem extends Subsystem {
 			normalizedFeedback = -1.0;
 		}
 
-		double error = speed - normalizedFeedback;
+		double error = (speed - normalizedFeedback) * RobotMap.KP;
 
 		double output = speed + error;
 
@@ -291,10 +289,17 @@ public class ChassisSubsystem extends Subsystem {
 
 	}
 
-	public void updateSmartDashboard(){
+	public void updateSmartDashboard() {
 		SmartDashboard.putNumber("Gyro", gyro.getAngle());
 		System.out.println(gyro.getAngle());
-//		System.out.println("Left Encoder: " + chassisSubsystem.getLeftEncoderCounts());
-//		System.out.println("Right Encoder: " + chassisSubsystem.getRightEncoderCounts());
+		// System.out.println("Left Encoder: " +
+		// chassisSubsystem.getLeftEncoderCounts());
+		// System.out.println("Right Encoder: " +
+		// chassisSubsystem.getRightEncoderCounts());
+
+		SmartDashboard.putNumber("Climb Encoder", climbEncoder.getRaw());
+		SmartDashboard.putNumber("Left Encoder", getLeftEncoderCounts());
+		SmartDashboard.putNumber("Right Encoder", getRightEncoderCounts());
 	}
+
 }

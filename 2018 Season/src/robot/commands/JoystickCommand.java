@@ -55,7 +55,7 @@ public class JoystickCommand extends Command {
 		}
 		
 		if (resetEncoders) {
-			chassisSubsystem.resetEncoders();
+			chassisSubsystem.resetClimbEncoder();
 		}
 		
 		if (isAccelerating) {
@@ -65,6 +65,11 @@ public class JoystickCommand extends Command {
 		}
 		
 		chassisSubsystem.setClimbMotors(climbSpeed);
+		
+		//lift game controller
+		chassisSubsystem.setLiftSpeed(Robot.oi.getliftSpeed());
+		
+		chassisSubsystem.setLiftSpeed(Robot.oi.getIntakeSpeed());
 		
 	}
 
