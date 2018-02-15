@@ -13,7 +13,8 @@ public class TurnToAngle extends Command {
 	double angle;
 	double currentAngle;
 
-	final double Min_Speed = 0.075;
+	final double Min_Speed = 0.3;
+	final double Max_Speed = 0.6;
 
 	public TurnToAngle(double angle) {
 		requires(Robot.chassisSubsystem);
@@ -33,19 +34,29 @@ public class TurnToAngle extends Command {
 
 		double speed = ((Math.abs(angle) - Math.abs(currentAngle)) / 165);
 
+		if (speed < Min_Speed) {
+			speed = Min_Speed;
+		}
+
+		if (speed > Max_Speed) {
+			speed = Max_Speed;
+		}
+
 		if (currentAngle < angle) {
 
 			// The current angle is smaller than the target angle
-			// We need to turn right to increase our angle to match the target angle
+			// We need to turn right to increase our angle to match the target
+			// angle
 
-			Robot.chassisSubsystem.setMovement(0, speed);
+			Robot.chassisSubsystem.setMovement(0, -speed);
 
 		} else {
 
 			// The current angle is larger than the target angle
-			// We need to turn left to decrease our angle to match the target angle
+			// We need to turn left to decrease our angle to match the target
+			// angle
 
-			Robot.chassisSubsystem.setMovement(0, -speed);
+			Robot.chassisSubsystem.setAcceleration(0, speed);
 
 		}
 

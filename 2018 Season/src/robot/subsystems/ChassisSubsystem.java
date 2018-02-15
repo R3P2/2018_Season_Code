@@ -3,6 +3,7 @@ package robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.torontocodingcollective.pid.TSpeedPID;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -22,6 +23,8 @@ public class ChassisSubsystem extends Subsystem {
 	DoubleSolenoid pancakeShifter = new DoubleSolenoid(0, 1);
 
 	// Our talon speed controlers. Only uncomment when talons are connected:
+	private final TSpeedPID leftSpeedPid = new TSpeedPID(RobotMap.KP, RobotMap.MAX_ENCODER_SPEED);
+	private final TSpeedPID rightSpeedPid = new TSpeedPID(RobotMap.KP, RobotMap.MAX_ENCODER_SPEED);
 
 	TalonSRX leftMotor_One = new TalonSRX(RobotMap.LEFT_MOTOR_PORT_ONE);
 	TalonSRX leftMotor_Two = new TalonSRX(RobotMap.LEFT_MOTOR_PORT_TWO);
@@ -50,14 +53,16 @@ public class ChassisSubsystem extends Subsystem {
 		// Set the default command for a subsystem here.
 		setDefaultCommand(new JoystickCommand());
 
-		leftMotor_One.setInverted(true);
-		leftMotor_Two.setInverted(true);
+		rightMotor_One.setInverted(true);
+		rightMotor_Two.setInverted(true);
 
 		leftMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		rightMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 
 		gyro.calibrate();
 
+		leftSpeedPid.enable();
+		rightSpeedPid.enable();
 	}
 
 	public void setLiftSpeed(double speed) {
@@ -85,12 +90,12 @@ public class ChassisSubsystem extends Subsystem {
 		return rightMotor_One.getSelectedSensorPosition(0);
 
 	}
-	
-	public int getRightEncoderRate(){
+
+	public int getRightEncoderRate() {
 		return rightMotor_One.getSelectedSensorVelocity(0);
 	}
-	
-	public int getLeftEncoderRate(){
+
+	public int getLeftEncoderRate() {
 		return leftMotor_One.getSelectedSensorVelocity(0);
 	}
 
@@ -120,19 +125,38 @@ public class ChassisSubsystem extends Subsystem {
 
 	private void setLeftMotors(double speed) {
 
-		leftMotor_One.set(ControlMode.PercentOutput, movePid(speed, getLeftEncoderRate(),
-		RobotMap.MAX_LEFT_ENCODER_SPEED));
-		leftMotor_Two.set(ControlMode.PercentOutput, movePid(speed, getLeftEncoderRate(),
-		RobotMap.MAX_RIGHT_ENCODER_SPEED));
+		leftSpeedPid.setSetpoint(speed);
+
+		leftSpeedPid.calculate(getLeftEncoderRate());
+
+		leftMotor_One.set(ControlMode.PercentOutput, leftSpeedPid.get());
+		leftMotor_Two.set(ControlMode.PercentOutput, leftSpeedPid.get());
+		// leftMotor_One.set(ControlMode.PercentOutput, movePid(speed,
+		// getLeftEncoderRate(),
+		// RobotMap.MAX_ENCODER_SPEED));
+		// leftMotor_Two.set(ControlMode.PercentOutput, movePid(speed,
+		// getLeftEncoderRate(),
+		// RobotMap.MAX_ENCODER_SPEED));
 
 	}
 
 	private void setRightMotors(double speed) {
 
-		rightMotor_One.set(ControlMode.PercentOutput, movePid(speed, getRightEncoderRate(),
-		RobotMap.MAX_LEFT_ENCODER_SPEED));
-		rightMotor_Two.set(ControlMode.PercentOutput, movePid(speed, getRightEncoderRate(),
-		RobotMap.MAX_RIGHT_ENCODER_SPEED));
+		if (speed > 0) {
+			rightSpeedPid.setSetpoint(speed * 0.88);
+		} else {
+			rightSpeedPid.setSetpoint(speed * 0.92);
+		}
+		rightSpeedPid.calculate(getRightEncoderRate());
+
+		rightMotor_One.set(ControlMode.PercentOutput, rightSpeedPid.get());
+		rightMotor_Two.set(ControlMode.PercentOutput, rightSpeedPid.get());
+		// rightMotor_One.set(ControlMode.PercentOutput, movePid(speed,
+		// getRightEncoderRate(),
+		// RobotMap.MAX_ENCODER_SPEED));
+		// rightMotor_Two.set(ControlMode.PercentOutput, movePid(speed,
+		// getRightEncoderRate(),
+		// RobotMap.MAX_ENCODER_SPEED));
 
 	}
 
@@ -254,7 +278,7 @@ public class ChassisSubsystem extends Subsystem {
 		} else {
 			if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 				// We are turning and NOT moving (rotating)
-				setMotors(-turn, turn);
+				setMotors(-turn * 0.4, turn * 0.4);
 			} else {
 				// Not doing anything:
 				setMotors(0, 0);
@@ -265,11 +289,12 @@ public class ChassisSubsystem extends Subsystem {
 	public double movePid(double speed, double feedback, double maxSpeed) {
 
 		double normalizedFeedback = feedback / maxSpeed;
+
 		if (normalizedFeedback > 1.0) {
-			normalizedFeedback = 1.0;
+			normalizedFeedback = 0.95;
 		}
 		if (normalizedFeedback < -1.0) {
-			normalizedFeedback = -1.0;
+			normalizedFeedback = -0.95;
 		}
 
 		double error = (speed - normalizedFeedback) * RobotMap.KP;
@@ -291,7 +316,7 @@ public class ChassisSubsystem extends Subsystem {
 
 	public void updateSmartDashboard() {
 		SmartDashboard.putNumber("Gyro", gyro.getAngle());
-		System.out.println(gyro.getAngle());
+		// System.out.println(gyro.getAngle());
 		// System.out.println("Left Encoder: " +
 		// chassisSubsystem.getLeftEncoderCounts());
 		// System.out.println("Right Encoder: " +
@@ -300,6 +325,12 @@ public class ChassisSubsystem extends Subsystem {
 		SmartDashboard.putNumber("Climb Encoder", climbEncoder.getRaw());
 		SmartDashboard.putNumber("Left Encoder", getLeftEncoderCounts());
 		SmartDashboard.putNumber("Right Encoder", getRightEncoderCounts());
+		SmartDashboard.putNumber("Left Encoder Rate", getLeftEncoderRate());
+		SmartDashboard.putNumber("Right Encoder Rate", getRightEncoderRate());
+		// SmartDashboard.putNumber("Left PID Speed", value)
+
+		// System.out.println(getLeftEncoderRate() + " " +
+		// getRightEncoderRate());
 	}
 
 }

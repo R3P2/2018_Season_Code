@@ -2,6 +2,7 @@ package robot.commands;
 
 import OI.OI;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import robot.Robot;
 import robot.subsystems.ChassisSubsystem;
 
@@ -20,13 +21,15 @@ public class JoystickCommand extends Command {
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
+		
 		chassisSubsystem = Robot.chassisSubsystem;
 		oi = Robot.oi;
 		isAccelerating = true;
 	}
 
 	// Called repeatedly when this Command is scheduled to run
-	protected void execute() {		
+	protected void execute() {	
+		System.out.println(chassisSubsystem.getLeftEncoderRate() + " " + chassisSubsystem.getRightEncoderRate() + " Difference");
 		boolean startAcceleration = oi.isAccelerating();
 		boolean stopAcceleration = oi.isNotAccelerating();
 
@@ -34,6 +37,8 @@ public class JoystickCommand extends Command {
 		boolean disableTurbo = oi.disableTurbo();
 		
 		boolean resetEncoders = oi.resetEncoders();
+		
+		boolean turnToAngle = oi.turnToAngle();
 		
 		double speed = oi.getSpeed();
 		double turn = oi.getTurn();
@@ -65,6 +70,10 @@ public class JoystickCommand extends Command {
 		}
 		
 		chassisSubsystem.setClimbMotors(climbSpeed);
+		
+		if (turnToAngle) {
+			Scheduler.getInstance().add(new TurnToAngle(70));
+		}
 		
 		//lift game controller
 		chassisSubsystem.setLiftSpeed(Robot.oi.getliftSpeed());

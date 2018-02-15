@@ -28,9 +28,13 @@ public class OI {
 	public boolean disableTurbo() {
 		return driveGameController.isLeftBumperDown();
 	}
+	
+	public boolean turnToAngle () {
+		return driveGameController.isBDown();
+	}
 
 	public double getSpeed() {
-		return driveGameController.getLeftYAxis();
+		return -driveGameController.getLeftYAxis();
 	}
 
 	public double getTurn() {
