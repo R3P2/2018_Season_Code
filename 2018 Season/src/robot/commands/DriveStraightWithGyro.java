@@ -12,26 +12,32 @@ public class DriveStraightWithGyro extends Command {
 
 	ChassisSubsystem chassisSubsystem;
 	private double timeout;
+	private double distance;
+	private double speed;
 	
-    public DriveStraightWithGyro() {
+    public DriveStraightWithGyro(double distance, double speed) {
         requires(Robot.chassisSubsystem);
+        this.distance = distance;
+        this.speed = speed;
         timeout = RobotMap.TIME_OUT;
     }
     
-    public DriveStraightWithGyro(double timeout) {
+    public DriveStraightWithGyro(double timeout, double distance, double speed) {
         requires(Robot.chassisSubsystem);
-        
+        this.distance = distance;
         this.timeout = timeout;
+        this.speed = speed;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
     	chassisSubsystem = Robot.chassisSubsystem;
+    	chassisSubsystem.gyro.reset();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	
+  
     }
 
     // Make this return true when this Command no longer needs to run execute()
