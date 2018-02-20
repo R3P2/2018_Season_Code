@@ -2,6 +2,7 @@ package robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import robot.Robot;
+import robot.RobotMap;
 import robot.util.Gyro;
 
 /**
@@ -65,7 +66,7 @@ public class TurnToAngle extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
 
-		return timeSinceInitialized() >= 5 || ((currentAngle >= angle - 1 && currentAngle <= angle + 1));
+		return timeSinceInitialized() >= RobotMap.TIME_OUT || ((currentAngle >= angle - 1 && currentAngle <= angle + 1));
 
 	}
 

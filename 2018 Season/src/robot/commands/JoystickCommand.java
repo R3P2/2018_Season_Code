@@ -76,9 +76,9 @@ public class JoystickCommand extends Command {
 		}
 		
 		//lift game controller
-		chassisSubsystem.setLiftSpeed(Robot.oi.getliftSpeed());
+		chassisSubsystem.setArmLiftSpeed(Robot.oi.getliftSpeed());
 		
-		chassisSubsystem.setLiftSpeed(Robot.oi.getIntakeSpeed());
+		chassisSubsystem.setIntakeSpeed(Robot.oi.getIntakeSpeed());
 		
 	}
 
