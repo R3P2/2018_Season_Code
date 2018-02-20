@@ -106,15 +106,11 @@ public class ChassisSubsystem extends Subsystem {
 	}
 
 	public double getLeftEncoderCounts() {
-
 		return leftMotor_One.getSelectedSensorPosition(0);
-
 	}
 
 	public double getRightEncoderCounts() {
-
 		return rightMotor_One.getSelectedSensorPosition(0);
-
 	}
 
 	public int getRightEncoderRate() {
@@ -126,21 +122,15 @@ public class ChassisSubsystem extends Subsystem {
 	}
 
 	public double getEncoderCounts() {
-
 		return (getLeftEncoderCounts() + getRightEncoderCounts()) / 2;
-
 	}
 
 	public double getClimbEncoder() {
-
 		return climbEncoder.getDistance();
-
 	}
 
 	public void resetClimbEncoder() {
-
 		climbEncoder.reset();
-
 	}
 
 	public double getLiftEncoder() {
@@ -148,13 +138,11 @@ public class ChassisSubsystem extends Subsystem {
 	}
 
 	public void setClimbMotors(double speed) {
-
 		if ((getClimbEncoder() < RobotMap.MAX_CLIMB_HEIGHT && getClimbEncoder() > 100) && speed > 0) {
 			climbMotor.set(speed);
 		} else {
 			climbMotor.set(0);
 		}
-
 	}
 
 	private void setLeftMotors(double speed) {
