@@ -32,6 +32,8 @@ public class JoystickCommand extends Command {
 		System.out.println("Left Encoder: " + chassisSubsystem.getLeftEncoderCounts());
 		System.out.println("Right Encoder: " + chassisSubsystem.getRightEncoderCounts());
 		
+		System.out.println("gyro ( " + Robot.chassisSubsystem.gyro.getName()+ " ) : " + Robot.chassisSubsystem.gyro.getAngle());
+		
 		boolean startAcceleration = oi.isAccelerating();
 		boolean stopAcceleration = oi.isNotAccelerating();
 
