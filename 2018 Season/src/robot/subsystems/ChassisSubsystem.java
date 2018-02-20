@@ -1,5 +1,7 @@
 package robot.subsystems;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -20,6 +22,9 @@ import robot.util.Gyro;
  */
 public class ChassisSubsystem extends Subsystem {
 
+	// TODO: find max encoder distance for lift and climb
+	// TODO: look at pids
+	// TODO: test auto
 	DoubleSolenoid pancakeShifter = new DoubleSolenoid(0, 1);
 
 	// Our talon speed controlers. Only uncomment when talons are connected:
@@ -53,11 +58,15 @@ public class ChassisSubsystem extends Subsystem {
 		// Set the default command for a subsystem here.
 		setDefaultCommand(new JoystickCommand());
 
+		// TODO: Create a tele op init method
+
 		rightMotor_One.setInverted(true);
 		rightMotor_Two.setInverted(true);
 
 		leftMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		rightMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+		// TODO:check to see if this is right
+		armLiftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 
 		gyro.calibrate();
 
@@ -65,13 +74,22 @@ public class ChassisSubsystem extends Subsystem {
 		rightSpeedPid.enable();
 	}
 
-	public void setLiftSpeed(double speed) {
-		armLiftMotor.set(ControlMode.PercentOutput, speed);
+	public void setArmLiftSpeed(double speed) {
+		if (Math.abs(speed) > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
+			armLiftMotor.set(ControlMode.PercentOutput, speed);
+		} else {
+			armLiftMotor.set(ControlMode.PercentOutput, 0);
+		}
 	}
 
 	public void setIntakeSpeed(double speed) {
-		intakeMotor_One.set(ControlMode.PercentOutput, speed);
-		intakeMotor_Two.set(ControlMode.PercentOutput, speed);
+		if (Math.abs(speed) > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
+			intakeMotor_One.set(ControlMode.PercentOutput, -speed);
+			intakeMotor_Two.set(ControlMode.PercentOutput, speed);
+		} else {
+			intakeMotor_One.set(ControlMode.PercentOutput, 0);
+			intakeMotor_Two.set(ControlMode.PercentOutput, 0);
+		}
 	}
 
 	public void setTurbo(boolean state) {
@@ -105,17 +123,25 @@ public class ChassisSubsystem extends Subsystem {
 
 	}
 
+	public double getClimbEncoder() {
+
+		return climbEncoder.getDistance();
+
+	}
+
 	public void resetClimbEncoder() {
 
 		climbEncoder.reset();
 
 	}
 
+	public double getLiftEncoder(){
+		return armLiftMotor.getSelectedSensorPosition(0);
+	}
+	
 	public void setClimbMotors(double speed) {
 
-		if (climbEncoder.getDistance() < 4000 && speed > 0) {
-			climbMotor.set(speed);
-		} else if (speed < 0) {
+		if ((getClimbEncoder() < RobotMap.MAX_CLIMB_HEIGHT && getClimbEncoder() > 100) && speed > 0) {
 			climbMotor.set(speed);
 		} else {
 			climbMotor.set(0);

@@ -32,6 +32,11 @@ public class RobotMap {
 	
 	public final static int MAX_ENCODER_SPEED = 2980;
 	
+	public final static int MAX_CLIMB_HEIGHT = 6500;
+	
 	public final static double JOYSTICK_NOISE_THRESHOLD = 0.2;
+	public static final double SCALE_HEIGHT = 0;
+	public static final double SWITCH_HEIGHT = 0;
+	public static final double TIME_OUT = 5.0;
 	
 }
