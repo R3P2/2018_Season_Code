@@ -23,7 +23,7 @@ import robot.subsystems.ChassisSubsystem;
 public class Robot extends IterativeRobot {
 	public static final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
 	public static OI oi;
-	
+
 	AutoCommand autonomousCommand;
 
 	/**
@@ -34,8 +34,9 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		oi = new OI();
 		// chooser.addObject("My Auto", new MyAutoCommand());
-		//SmartDashboard.putData("Auto mode", robotPosition);
+		// SmartDashboard.putData("Auto mode", robotPosition);
 		updateSmartDashboard();
+		chassisSubsystem.chassisInit();
 	}
 
 	/**
@@ -61,13 +62,14 @@ public class Robot extends IterativeRobot {
 	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
 	 * getString code to get the auto name from the text box below the Gyro
 	 *
-	 * <p>You can add additional auto modes by adding additional commands to the
+	 * <p>
+	 * You can add additional auto modes by adding additional commands to the
 	 * chooser code above (like the commented example) or additional comparisons
 	 * to the switch structure below with additional strings & commands.
 	 */
 	@Override
 	public void autonomousInit() {
-		//autonomousCommand = robotPosition.getSelected();
+		// autonomousCommand = robotPosition.getSelected();
 
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -98,9 +100,9 @@ public class Robot extends IterativeRobot {
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
-		
-		chassisSubsystem.gyro.setName("hihihihihihi");
-		
+
+		chassisSubsystem.teleopInit();
+
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
@@ -124,7 +126,7 @@ public class Robot extends IterativeRobot {
 		updateSmartDashboard();
 	}
 
-	public void updateSmartDashboard(){
+	public void updateSmartDashboard() {
 		chassisSubsystem.updateSmartDashboard();
 		oi.autoSelector.updateSmartDashboard();
 	}

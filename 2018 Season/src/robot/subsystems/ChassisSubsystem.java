@@ -59,19 +59,29 @@ public class ChassisSubsystem extends Subsystem {
 		setDefaultCommand(new JoystickCommand());
 
 		// TODO: Create a tele op init method
+		// TODO:check to see if this is right
+
+	}
+
+	public void chassisInit() {
 
 		rightMotor_One.setInverted(true);
 		rightMotor_Two.setInverted(true);
 
 		leftMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		rightMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
-		// TODO:check to see if this is right
-		armLiftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 
-		gyro.calibrate();
+		armLiftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 
 		leftSpeedPid.enable();
 		rightSpeedPid.enable();
+
+	}
+
+	public void teleopInit() {
+
+		gyro.calibrate();
+
 	}
 
 	public void setArmLiftSpeed(double speed) {
@@ -135,10 +145,10 @@ public class ChassisSubsystem extends Subsystem {
 
 	}
 
-	public double getLiftEncoder(){
+	public double getLiftEncoder() {
 		return armLiftMotor.getSelectedSensorPosition(0);
 	}
-	
+
 	public void setClimbMotors(double speed) {
 
 		if ((getClimbEncoder() < RobotMap.MAX_CLIMB_HEIGHT && getClimbEncoder() > 100) && speed > 0) {
