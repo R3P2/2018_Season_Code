@@ -38,5 +38,6 @@ public class RobotMap {
 	public static final double SCALE_HEIGHT = 0;
 	public static final double SWITCH_HEIGHT = 0;
 	public static final double TIME_OUT = 5.0;
+	public static final double MAX_ENCODER_COUNTS_PER_FT = 1800;
 	
 }

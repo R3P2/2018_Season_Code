@@ -1,7 +1,5 @@
 package robot.subsystems;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -186,7 +184,7 @@ public class ChassisSubsystem extends Subsystem {
 
 	}
 
-	private void setMotors(double rightSpeed, double leftSpeed) {
+	public void setMotors(double rightSpeed, double leftSpeed) {
 
 		// Talon Motors
 		setLeftMotors(leftSpeed);
