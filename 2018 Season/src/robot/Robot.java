@@ -7,13 +7,9 @@
 
 package robot;
 
-import OI.AutoSelector;
 import OI.OI;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import robot.commands.AutoCommand;
 import robot.subsystems.ChassisSubsystem;
 
@@ -129,6 +125,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void updateSmartDashboard(){
+		chassisSubsystem.updateSmartDashboard();
 		oi.autoSelector.updateSmartDashboard();
 	}
 }

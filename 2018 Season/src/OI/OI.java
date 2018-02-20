@@ -17,48 +17,61 @@ public class OI {
 	
 	public AutoSelector autoSelector = new AutoSelector();
 	
-	GameController gameController = new XBoxController(0);
+	GameController driveGameController = new XBoxController(0);
+	GameController liftGameController = new XBoxController(1);
+
 
 	public boolean enableTurbo() {
-		return gameController.isRightBumperDown();
+		return driveGameController.isRightBumperDown();
 	}
 
 	public boolean disableTurbo() {
-		return gameController.isLeftBumperDown();
+		return driveGameController.isLeftBumperDown();
+	}
+	
+	public boolean turnToAngle () {
+		return driveGameController.isBDown();
 	}
 
 	public double getSpeed() {
-		return gameController.getLeftYAxis();
+		return -driveGameController.getLeftYAxis();
 	}
 
 	public double getTurn() {
-		return gameController.getRightXAxis();
+		return driveGameController.getRightXAxis();
 	}
 
 	public double getClimb() {
-		return gameController.getRightYAxis();
+		return driveGameController.getRightYAxis();
 	}
 
 	public boolean isAccelerating() {
-		return gameController.isADown();
+		return driveGameController.isADown();
 	}
 
 	public boolean isNotAccelerating() {
-		return gameController.isXDown();
+		return driveGameController.isXDown();
 	}
 	
 	public boolean resetEncoders () {
-		return gameController.isYDown();
+		return driveGameController.isYDown();
 	}
 
 	public double getClimbSpeed() {
-		if (gameController.getRightTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
-			return gameController.getRightTriggerAxis();
-		} else if (gameController.getLeftTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD){
-			return -gameController.getLeftTriggerAxis();
+		if (driveGameController.getRightTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
+			return driveGameController.getRightTriggerAxis();
+		} else if (driveGameController.getLeftTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD){
+			return -driveGameController.getLeftTriggerAxis();
 		} else {
 			return 0;
 		}
 	}
 
+	public double getliftSpeed(){
+		return liftGameController.getLeftYAxis();
+	}
+	
+	public double getIntakeSpeed(){
+		return liftGameController.getRightYAxis();
+	}
 }
