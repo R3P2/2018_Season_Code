@@ -135,17 +135,14 @@ public class ChassisSubsystem extends Subsystem {
 	}
 
 	public void setClimbMotors(double speed) {
-<<<<<<< HEAD
-
 		if (getClimbEncoder() < RobotMap.MAX_CLIMB_HEIGHT && speed > 0) {
 			climbMotor.set(speed);
 		} else if ((getClimbEncoder() < 100 && speed < 0)) {
-=======
-		if ((getClimbEncoder() < RobotMap.MAX_CLIMB_HEIGHT && getClimbEncoder() > 100) && speed > 0) {
->>>>>>> branch 'master' of https://github.com/R3P2/2018_Season_Code.git
-			climbMotor.set(speed);
-		} else {
-			climbMotor.set(0);
+			if ((getClimbEncoder() < RobotMap.MAX_CLIMB_HEIGHT && getClimbEncoder() > 100) && speed > 0) {
+				climbMotor.set(speed);
+			} else {
+				climbMotor.set(0);
+			}
 		}
 	}
 
