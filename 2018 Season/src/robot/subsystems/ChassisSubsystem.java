@@ -15,9 +15,6 @@ import robot.RobotMap;
 import robot.commands.JoystickCommand;
 import robot.util.Gyro;
 
-/**
- *
- */
 public class ChassisSubsystem extends Subsystem {
 
 	// TODO: find max encoder distance for lift and climb
@@ -106,15 +103,11 @@ public class ChassisSubsystem extends Subsystem {
 	}
 
 	public double getLeftEncoderCounts() {
-
 		return leftMotor_One.getSelectedSensorPosition(0);
-
 	}
 
 	public double getRightEncoderCounts() {
-
 		return rightMotor_One.getSelectedSensorPosition(0);
-
 	}
 
 	public int getRightEncoderRate() {
@@ -126,21 +119,15 @@ public class ChassisSubsystem extends Subsystem {
 	}
 
 	public double getEncoderCounts() {
-
 		return (getLeftEncoderCounts() + getRightEncoderCounts()) / 2;
-
 	}
 
 	public double getClimbEncoder() {
-
 		return climbEncoder.getDistance();
-
 	}
 
 	public void resetClimbEncoder() {
-
 		climbEncoder.reset();
-
 	}
 
 	public double getLiftEncoder() {
@@ -149,7 +136,9 @@ public class ChassisSubsystem extends Subsystem {
 
 	public void setClimbMotors(double speed) {
 
-		if ((getClimbEncoder() < RobotMap.MAX_CLIMB_HEIGHT && getClimbEncoder() > 100) && speed > 0) {
+		if (getClimbEncoder() < RobotMap.MAX_CLIMB_HEIGHT && speed > 0) {
+			climbMotor.set(speed);
+		} else if ((getClimbEncoder() < 100 && speed < 0)) {
 			climbMotor.set(speed);
 		} else {
 			climbMotor.set(0);
@@ -159,12 +148,12 @@ public class ChassisSubsystem extends Subsystem {
 
 	private void setLeftMotors(double speed) {
 
-		leftSpeedPid.setSetpoint(speed);
+		// leftSpeedPid.setSetpoint(speed);
+		//
+		// leftSpeedPid.calculate(getLeftEncoderRate());
 
-		leftSpeedPid.calculate(getLeftEncoderRate());
-
-		leftMotor_One.set(ControlMode.PercentOutput, leftSpeedPid.get());
-		leftMotor_Two.set(ControlMode.PercentOutput, leftSpeedPid.get());
+		leftMotor_One.set(ControlMode.PercentOutput, speed);
+		leftMotor_Two.set(ControlMode.PercentOutput, speed);
 		// leftMotor_One.set(ControlMode.PercentOutput, movePid(speed,
 		// getLeftEncoderRate(),
 		// RobotMap.MAX_ENCODER_SPEED));
@@ -176,15 +165,15 @@ public class ChassisSubsystem extends Subsystem {
 
 	private void setRightMotors(double speed) {
 
-		if (speed > 0) {
-			rightSpeedPid.setSetpoint(speed * 0.88);
-		} else {
-			rightSpeedPid.setSetpoint(speed * 0.92);
-		}
-		rightSpeedPid.calculate(getRightEncoderRate());
+		// if (speed > 0) {
+		// rightSpeedPid.setSetpoint(speed * 0.88);
+		// } else {
+		// rightSpeedPid.setSetpoint(speed * 0.92);
+		// }
+		// rightSpeedPid.calculate(getRightEncoderRate());
 
-		rightMotor_One.set(ControlMode.PercentOutput, rightSpeedPid.get());
-		rightMotor_Two.set(ControlMode.PercentOutput, rightSpeedPid.get());
+		rightMotor_One.set(ControlMode.PercentOutput, speed);
+		rightMotor_Two.set(ControlMode.PercentOutput, speed);
 		// rightMotor_One.set(ControlMode.PercentOutput, movePid(speed,
 		// getRightEncoderRate(),
 		// RobotMap.MAX_ENCODER_SPEED));
@@ -350,17 +339,13 @@ public class ChassisSubsystem extends Subsystem {
 
 	public void updateSmartDashboard() {
 		SmartDashboard.putNumber("Gyro", gyro.getAngle());
-		// System.out.println(gyro.getAngle());
-		// System.out.println("Left Encoder: " +
-		// chassisSubsystem.getLeftEncoderCounts());
-		// System.out.println("Right Encoder: " +
-		// chassisSubsystem.getRightEncoderCounts());
-
-		SmartDashboard.putNumber("Climb Encoder", climbEncoder.getRaw());
+		SmartDashboard.putNumber("Climb Encoder", getClimbEncoder());
 		SmartDashboard.putNumber("Left Encoder", getLeftEncoderCounts());
 		SmartDashboard.putNumber("Right Encoder", getRightEncoderCounts());
 		SmartDashboard.putNumber("Left Encoder Rate", getLeftEncoderRate());
 		SmartDashboard.putNumber("Right Encoder Rate", getRightEncoderRate());
+
+		SmartDashboard.putNumber("Lift Encoder Counts", getLiftEncoder());
 		// SmartDashboard.putNumber("Left PID Speed", value)
 
 		// System.out.println(getLeftEncoderRate() + " " +
