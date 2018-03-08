@@ -17,8 +17,8 @@ public class OI {
 	
 	public AutoSelector autoSelector = new AutoSelector();
 	
-	GameController driveGameController = new XBoxController(0);
-	LogitechExtreme3DProController liftGameController = new LogitechExtreme3DProController(1);
+	XBoxController driveGameController = new XBoxController(0);
+	XBoxController liftGameController = new XBoxController(1);
 
 
 	public boolean enableTurbo() {
@@ -68,18 +68,10 @@ public class OI {
 	}
 
 	public double getliftSpeed(){
-		if(liftGameController instanceof LogitechExtreme3DProController){
-			return liftGameController.getYAxis();
-		}else{
-			return liftGameController.getLeftYAxis();
-		}
+		return liftGameController.getLeftYAxis() * 0.8;
 	}
 	
 	public double getIntakeSpeed(){
-		if(liftGameController instanceof LogitechExtreme3DProController){
-			return liftGameController.getXAxis();
-		}else{
-			return liftGameController.getRightYAxis();
-		}
+		return liftGameController.getRightYAxis() * 0.8;
 	}
 }
