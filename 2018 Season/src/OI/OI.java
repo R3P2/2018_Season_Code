@@ -57,13 +57,16 @@ public class OI {
 	}
 
 	public double getClimbSpeed() {
+		if(liftGameController.getRightTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD){
+			return liftGameController.getRightTriggerAxis();
+		}
+		
 		if (liftGameController.getLeftTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 			return -liftGameController.getLeftTriggerAxis();
-		} else if(liftGameController.getRightTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD){
-			return liftGameController.getRightTriggerAxis();
-		}else{
-			return 0;
-		}
+		} 
+
+		return 0;
+		
 	}
 
 	public double getliftSpeed() {

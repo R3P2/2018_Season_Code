@@ -148,9 +148,9 @@ public class ChassisSubsystem extends Subsystem {
 
 	private void setLeftMotors(double speed) {
 
-		 leftSpeedPid.setSetpoint(speed);
-		
-		 leftSpeedPid.calculate(getLeftEncoderRate());
+		leftSpeedPid.setSetpoint(speed);
+
+		leftSpeedPid.calculate(getLeftEncoderRate());
 
 		leftMotor_One.set(ControlMode.PercentOutput, speed);
 		leftMotor_Two.set(ControlMode.PercentOutput, speed);
@@ -165,12 +165,12 @@ public class ChassisSubsystem extends Subsystem {
 
 	private void setRightMotors(double speed) {
 
-//		 if (speed > 0) {
-		 rightSpeedPid.setSetpoint(speed * 0.88);
-//		 } else {
-//		 rightSpeedPid.setSetpoint(speed * 0.92);
-//		 }
-		 rightSpeedPid.calculate(getRightEncoderRate());
+		// if (speed > 0) {
+		rightSpeedPid.setSetpoint(speed * 0.88);
+		// } else {
+		// rightSpeedPid.setSetpoint(speed * 0.92);
+		// }
+		rightSpeedPid.calculate(getRightEncoderRate());
 
 		rightMotor_One.set(ControlMode.PercentOutput, speed);
 		rightMotor_Two.set(ControlMode.PercentOutput, speed);
@@ -201,18 +201,18 @@ public class ChassisSubsystem extends Subsystem {
 
 	public void setMovement(double speed, double turn) {
 
-		double 	dabs_speed = Math.abs(speed), 
-				dabs_turn = Math.abs(turn);
+		double dabs_speed = Math.abs(speed), dabs_turn = Math.abs(turn);
 
 		if (dabs_turn < RobotMap.JOYSTICK_NOISE_THRESHOLD && dabs_speed > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 			setMotors(speed, speed);
 		} else if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD && dabs_speed > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 
-			if (turn < 0.0) {
-				setMotors((1 - turn) * speed, speed);
-			} else {
+			if (turn > 0.0) {
 				setMotors(speed, (1 - turn) * speed);
+			} else {
+				setMotors((1 - turn) * speed, speed);
 			}
+			
 		} else if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 
 			setMotors(-turn, turn);
@@ -287,7 +287,7 @@ public class ChassisSubsystem extends Subsystem {
 			if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 				// We are moving AND turning.
 				// We need the turn direction:
-				if (turn > 0) {
+				if (turn < 0) {
 					setMotors(daccspeed, (1 - turn) * daccspeed);
 				} else {
 					setMotors((1 - dabs_turn) * daccspeed, daccspeed);
