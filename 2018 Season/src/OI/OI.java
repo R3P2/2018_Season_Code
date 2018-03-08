@@ -14,12 +14,11 @@ import robot.RobotMap;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-	
-	public AutoSelector autoSelector = new AutoSelector();
-	
-	GameController driveGameController = new XBoxController(0);
-	LogitechExtreme3DProController liftGameController = new LogitechExtreme3DProController(1);
 
+	public AutoSelector autoSelector = new AutoSelector();
+
+	GameController driveGameController = new XBoxController(0);
+	GameController liftGameController = new XBoxController(1);
 
 	public boolean enableTurbo() {
 		return driveGameController.isRightBumperDown();
@@ -28,8 +27,8 @@ public class OI {
 	public boolean disableTurbo() {
 		return driveGameController.isLeftBumperDown();
 	}
-	
-	public boolean turnToAngle () {
+
+	public boolean turnToAngle() {
 		return driveGameController.isBDown();
 	}
 
@@ -52,34 +51,26 @@ public class OI {
 	public boolean isNotAccelerating() {
 		return driveGameController.isXDown();
 	}
-	
-	public boolean resetEncoders () {
+
+	public boolean resetEncoders() {
 		return driveGameController.isYDown();
 	}
 
 	public double getClimbSpeed() {
-		if (driveGameController.getRightTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
-			return driveGameController.getRightTriggerAxis();
-		} else if (driveGameController.getLeftTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD){
-			return -driveGameController.getLeftTriggerAxis();
-		} else {
+		if (liftGameController.getLeftTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
+			return -liftGameController.getLeftTriggerAxis();
+		} else if(liftGameController.getRightTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD){
+			return liftGameController.getRightTriggerAxis();
+		}else{
 			return 0;
 		}
 	}
 
-	public double getliftSpeed(){
-		if(liftGameController instanceof LogitechExtreme3DProController){
-			return liftGameController.getYAxis();
-		}else{
-			return liftGameController.getLeftYAxis();
-		}
+	public double getliftSpeed() {
+		return liftGameController.getLeftYAxis();
 	}
-	
-	public double getIntakeSpeed(){
-		if(liftGameController instanceof LogitechExtreme3DProController){
-			return liftGameController.getXAxis();
-		}else{
-			return liftGameController.getRightYAxis();
-		}
+
+	public double getIntakeSpeed() {
+		return liftGameController.getRightYAxis();
 	}
 }

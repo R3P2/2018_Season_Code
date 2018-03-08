@@ -14,8 +14,8 @@ public class TurnToAngle extends Command {
 	double angle;
 	double currentAngle;
 
-	final double Min_Speed = 0.3;
-	final double Max_Speed = 0.6;
+	final double Min_Speed = 0.5;
+	final double Max_Speed = 0.75;
 
 	public TurnToAngle(double angle) {
 		requires(Robot.chassisSubsystem);
