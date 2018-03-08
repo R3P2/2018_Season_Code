@@ -52,7 +52,6 @@ public class ChassisSubsystem extends Subsystem {
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
 		setDefaultCommand(new JoystickCommand());
-
 		// TODO: Create a tele op init method
 		// TODO:check to see if this is right
 
@@ -66,6 +65,7 @@ public class ChassisSubsystem extends Subsystem {
 		leftMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		rightMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 
+		intakeMotor_Two.setInverted(true);
 		armLiftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 
 		leftSpeedPid.enable();
@@ -89,7 +89,7 @@ public class ChassisSubsystem extends Subsystem {
 
 	public void setIntakeSpeed(double speed) {
 		if (Math.abs(speed) > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
-			intakeMotor_One.set(ControlMode.PercentOutput, -speed);
+			intakeMotor_One.set(ControlMode.PercentOutput, speed);
 			intakeMotor_Two.set(ControlMode.PercentOutput, speed);
 		} else {
 			intakeMotor_One.set(ControlMode.PercentOutput, 0);

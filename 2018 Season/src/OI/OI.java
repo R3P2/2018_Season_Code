@@ -69,11 +69,14 @@ public class OI {
 		
 	}
 
-	public double getliftSpeed() {
-		return liftGameController.getLeftYAxis();
+
+	public double getliftSpeed(){
+		return liftGameController.getLeftYAxis() * 0.8;
 	}
 
-	public double getIntakeSpeed() {
-		return liftGameController.getRightYAxis();
+	
+	public double getIntakeSpeed(){
+		return liftGameController.getRightYAxis() * 0.8;
 	}
+	
 }
