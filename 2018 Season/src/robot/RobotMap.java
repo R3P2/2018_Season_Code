@@ -28,7 +28,7 @@ public class RobotMap {
 	public final static int SOLENOID_PORT_ONE = 0;
 	public final static int SOLENOID_PORT_TWO= 1;
 	
-	public final static double KP = 1.0;
+	public final static double KP = 0.9;
 	
 	public final static int MAX_ENCODER_SPEED = 2980;
 	

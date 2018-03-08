@@ -17,7 +17,6 @@ import robot.util.Gyro;
 
 public class ChassisSubsystem extends Subsystem {
 
-	// TODO: find max encoder distance for lift and climb
 	// TODO: look at pids
 	// TODO: test auto
 	DoubleSolenoid pancakeShifter = new DoubleSolenoid(0, 1);
@@ -52,8 +51,6 @@ public class ChassisSubsystem extends Subsystem {
 	public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
 		setDefaultCommand(new JoystickCommand());
-		// TODO: Create a tele op init method
-		// TODO:check to see if this is right
 
 	}
 
@@ -148,51 +145,48 @@ public class ChassisSubsystem extends Subsystem {
 
 	private void setLeftMotors(double speed) {
 
-		leftSpeedPid.setSetpoint(speed);
+//		leftSpeedPid.setSetpoint(speed);
+//
+//		leftSpeedPid.calculate(getLeftEncoderRate());
 
-		leftSpeedPid.calculate(getLeftEncoderRate());
-
-		leftMotor_One.set(ControlMode.PercentOutput, speed);
-		leftMotor_Two.set(ControlMode.PercentOutput, speed);
-		// leftMotor_One.set(ControlMode.PercentOutput, movePid(speed,
-		// getLeftEncoderRate(),
-		// RobotMap.MAX_ENCODER_SPEED));
-		// leftMotor_Two.set(ControlMode.PercentOutput, movePid(speed,
-		// getLeftEncoderRate(),
-		// RobotMap.MAX_ENCODER_SPEED));
+//		leftMotor_One.set(ControlMode.PercentOutput, speed);
+//		leftMotor_Two.set(ControlMode.PercentOutput, speed);
+		
+		 leftMotor_One.set(ControlMode.PercentOutput, movePid(speed,
+		 getLeftEncoderRate(),
+		 RobotMap.MAX_ENCODER_SPEED));
+		 leftMotor_Two.set(ControlMode.PercentOutput, movePid(speed,
+		 getLeftEncoderRate(),
+		 RobotMap.MAX_ENCODER_SPEED));
 
 	}
 
 	private void setRightMotors(double speed) {
 
-		// if (speed > 0) {
-		rightSpeedPid.setSetpoint(speed * 0.88);
-		// } else {
-		// rightSpeedPid.setSetpoint(speed * 0.92);
-		// }
-		rightSpeedPid.calculate(getRightEncoderRate());
-
-		rightMotor_One.set(ControlMode.PercentOutput, speed);
-		rightMotor_Two.set(ControlMode.PercentOutput, speed);
-		// rightMotor_One.set(ControlMode.PercentOutput, movePid(speed,
-		// getRightEncoderRate(),
-		// RobotMap.MAX_ENCODER_SPEED));
-		// rightMotor_Two.set(ControlMode.PercentOutput, movePid(speed,
-		// getRightEncoderRate(),
-		// RobotMap.MAX_ENCODER_SPEED));
+//		// if (speed > 0) {
+//		rightSpeedPid.setSetpoint(speed * 0.88);
+//		// } else {
+//		// rightSpeedPid.setSetpoint(speed * 0.92);
+//		// }
+//		rightSpeedPid.calculate(getRightEncoderRate());
+//
+//		rightMotor_One.set(ControlMode.PercentOutput, speed);
+//		rightMotor_Two.set(ControlMode.PercentOutput, speed);
+		
+		 rightMotor_One.set(ControlMode.PercentOutput, movePid(speed,
+		 getRightEncoderRate(),
+		 RobotMap.MAX_ENCODER_SPEED));
+		 rightMotor_Two.set(ControlMode.PercentOutput, movePid(speed,
+		 getRightEncoderRate(),
+		 RobotMap.MAX_ENCODER_SPEED));
 
 	}
 
 	public void setMotors(double rightSpeed, double leftSpeed) {
-
+		
 		// Talon Motors
 		setLeftMotors(leftSpeed);
 		setRightMotors(rightSpeed);
-		// leftMotor.set(movePid(leftSpeed, leftEncoder.getDistance(),
-		// RobotMap.MAX_LEFT_ENCODER_SPEED));
-		// rightMotor.set(movePid(rightSpeed, rightEncoder.getDistance(),
-		// RobotMap.MAX_RIGHT_ENCODER_SPEED));
-
 	}
 
 	private void setMotors(double speed) {

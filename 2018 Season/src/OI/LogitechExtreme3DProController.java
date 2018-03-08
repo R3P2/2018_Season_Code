@@ -1,7 +1,5 @@
 package OI;
 
-import edu.wpi.first.wpilibj.Joystick;
-
 public class LogitechExtreme3DProController extends GameController{
 
 	public LogitechExtreme3DProController(int port) {

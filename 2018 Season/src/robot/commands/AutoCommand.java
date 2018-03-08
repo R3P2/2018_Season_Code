@@ -1,11 +1,6 @@
 package robot.commands;
 
-import OI.AutoSelector.AllianceScale;
-import OI.AutoSelector.AllianceSwitch;
-import OI.AutoSelector.RobotBehaviour;
-import OI.AutoSelector.RobotPosition;
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import robot.Robot;
 
 /**
  *
