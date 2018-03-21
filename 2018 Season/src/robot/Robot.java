@@ -25,13 +25,6 @@ import robot.subsystems.ChassisSubsystem;
 public class Robot extends IterativeRobot {
 	public static final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
 	public static OI oi;
-	
-	/**
-	 * 0  - Move Forward
-	 * 1  - Right Auto
-	 * -1 - Left Auto
-	 */
-	public static int auto = 0;
 
 	AutoCommand autonomousCommand;
 
@@ -79,16 +72,6 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-
-		String gameData;
-		gameData = DriverStation.getInstance().getGameSpecificMessage();
-		if (gameData.length() > 0) {
-			if (gameData.charAt(0) == 'L') {
-				// Put left auto code here
-			} else {
-				// Put right auto code here
-			}
-		}
 
 		autonomousCommand = new AutoCommand();
 

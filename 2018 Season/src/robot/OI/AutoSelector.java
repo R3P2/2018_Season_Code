@@ -7,14 +7,11 @@ public class AutoSelector {
 
 	public enum RobotPosition {LEFT, RIGHT, CENTER};
 	public enum RobotBehaviour {SWITCH, SCALE, BASELINE};
-	public enum AllianceSwitch {LEFT, RIGHT};
-	public enum AllianceScale {LEFT, RIGHT};
+	public enum SwitchOrScaleSide {LEFT, RIGHT};
 
 	
 	public SendableChooser<String> robotPosition;
 	public SendableChooser<String> robotBehaviour;
-	public SendableChooser<String> allianceSwitchSide;
-	public SendableChooser<String> allianceScaleSide;
 	
 	public AutoSelector(){
 		
@@ -30,15 +27,6 @@ public class AutoSelector {
 		robotBehaviour.addDefault("Place cube on scale", "scale");
 		robotBehaviour.addDefault("Cross baseline", "baseline");
 		
-		//determining alliance side of switch
-		allianceSwitchSide = new SendableChooser<String>();
-		allianceSwitchSide.addDefault("right", "right");
-		allianceSwitchSide.addDefault("left", "left");
-		
-		//determining alliance side of scale
-		allianceScaleSide = new SendableChooser<String>();
-		allianceScaleSide.addDefault("right", "right");
-		allianceScaleSide.addDefault("left", "left");
 	}
 	
 	public RobotPosition getRobotPosition(){
@@ -58,28 +46,10 @@ public class AutoSelector {
 			default:	return RobotBehaviour.BASELINE;
 		}
 	}
-	
-	public AllianceSwitch getAllianceSwitch(){
-		switch(robotPosition.getSelected()){
-			case "left": return AllianceSwitch.LEFT;
-			case "right": return AllianceSwitch.RIGHT;
-			default:	return AllianceSwitch.LEFT;
-		}
-	}
-	
-	public AllianceScale getAllianceScale(){
-		switch(robotPosition.getSelected()){
-			case "left": return AllianceScale.LEFT;
-			case "right": return AllianceScale.RIGHT;
-			default:	return AllianceScale.LEFT;
-		}
-	}
 
 	public void updateSmartDashboard(){
 		SmartDashboard.putData("Robot Position", robotPosition);
 		SmartDashboard.putData("Robot Behaviour", robotBehaviour);
-		SmartDashboard.putData("Alliance Switch", allianceSwitchSide);
-		SmartDashboard.putData("Alliance Scale", allianceScaleSide);
 	}
 	
 }

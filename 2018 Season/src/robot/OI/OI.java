@@ -7,19 +7,51 @@
 
 package robot.OI;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import robot.RobotMap;
+import robot.OI.AutoSelector.SwitchOrScaleSide;
 
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-
+	
+	String gameData = DriverStation.getInstance().getGameSpecificMessage();
+	
 	public AutoSelector autoSelector = new AutoSelector();
 
 	GameController driveGameController = new XBoxController(0);
 	GameController liftGameController = new XBoxController(1);
 
+	/**
+	 * @return
+	 * true = right
+	 * false = left
+	 */
+	
+	public SwitchOrScaleSide getSwitchSide(){
+		if (gameData.length() > 0) {
+			if (gameData.charAt(0) == 'L') {
+				return SwitchOrScaleSide.LEFT;
+			} else {
+				return SwitchOrScaleSide.RIGHT;
+			}
+		}
+		return SwitchOrScaleSide.LEFT;
+	}
+	
+	public SwitchOrScaleSide getScaleSide(){
+		if (gameData.length() > 0) {
+			if (gameData.charAt(1) == 'L') {
+				return SwitchOrScaleSide.LEFT;
+			} else {
+				return SwitchOrScaleSide.RIGHT;
+			}
+		}
+		return SwitchOrScaleSide.LEFT;
+	}
+	
 	public boolean enableTurbo() {
 		return driveGameController.isRightBumperDown();
 	}
