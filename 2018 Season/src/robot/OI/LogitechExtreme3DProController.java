@@ -1,4 +1,4 @@
-package OI;
+package robot.OI;
 
 public class LogitechExtreme3DProController extends GameController{
 

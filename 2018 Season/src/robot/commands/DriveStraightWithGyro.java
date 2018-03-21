@@ -52,7 +52,7 @@ public class DriveStraightWithGyro extends Command {
     		leftSpeed = speed * 0.25;
     	}
     	
-    	Robot.chassisSubsystem.setMotors(leftSpeed, rightSpeed);
+    	Robot.chassisSubsystem.setMotors(rightSpeed, leftSpeed);
     }
 
     // Make this return true when this Command no longer needs to run execute()

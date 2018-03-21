@@ -10,7 +10,7 @@ public class AutoCommand extends CommandGroup {
 	private final double BASELINE_DISTANCE = 10.00;
 	
 	//maximum time in seconds
-	public final double fullTime = 7.5;
+	public final double fullTime = 2;
 	
 	//turning angles
 	private double turnAngle = 45;
@@ -18,7 +18,7 @@ public class AutoCommand extends CommandGroup {
     public AutoCommand() {
     	
     	
-    	addSequential(new DriveStraight(BASELINE_DISTANCE, 0.7, fullTime));
+    	addSequential(new DriveStraight(BASELINE_DISTANCE, 0.25, fullTime));
     	addSequential(new TurnToAngle(turnAngle));
     	addSequential(new TurnToAngle(-2*turnAngle));
     	

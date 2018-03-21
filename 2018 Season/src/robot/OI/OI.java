@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package OI;
+package robot.OI;
 
 import robot.RobotMap;
 
@@ -28,10 +28,6 @@ public class OI {
 		return driveGameController.isLeftBumperDown();
 	}
 
-	public boolean turnToAngle() {
-		return driveGameController.isBDown();
-	}
-
 	public double getSpeed() {
 		return -driveGameController.getLeftYAxis();
 	}
@@ -52,31 +48,37 @@ public class OI {
 		return driveGameController.isXDown();
 	}
 
-	public boolean resetEncoders() {
-		return driveGameController.isYDown();
-	}
+	// public boolean resetEncoders() {
+	// return driveGameController.isYDown();
+	// }
 
 	public double getClimbSpeed() {
-		if(liftGameController.getRightTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD){
+		if (liftGameController.getRightTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 			return liftGameController.getRightTriggerAxis();
 		}
-		
+
 		if (liftGameController.getLeftTriggerAxis() > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 			return -liftGameController.getLeftTriggerAxis();
-		} 
+		}
 
 		return 0;
-		
+
 	}
 
-
-	public double getliftSpeed(){
-		return liftGameController.getLeftYAxis() * 0.8;
+	public boolean liftUp() {
+		return liftGameController.isYDown();
 	}
 
-	
-	public double getIntakeSpeed(){
-		return liftGameController.getRightYAxis() * 0.8;
+	public boolean liftDown() {
+		return liftGameController.isADown();
 	}
-	
+
+	public boolean intakeIn() {
+		return liftGameController.isBDown();
+	}
+
+	public boolean intakeOut() {
+		return liftGameController.isXDown();
+	}
+
 }

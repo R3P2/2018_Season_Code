@@ -1,9 +1,9 @@
 package robot.commands;
 
-import OI.OI;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import robot.Robot;
+import robot.OI.OI;
 import robot.subsystems.ChassisSubsystem;
 
 /**
@@ -21,7 +21,7 @@ public class JoystickCommand extends Command {
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
-		
+
 		chassisSubsystem = Robot.chassisSubsystem;
 		oi = Robot.oi;
 		isAccelerating = true;
@@ -31,31 +31,21 @@ public class JoystickCommand extends Command {
 
 	protected void execute() {
 
-		
-		System.out.println("Left Encoder: " + chassisSubsystem.getLeftEncoderCounts());
-		System.out.println("Right Encoder: " + chassisSubsystem.getRightEncoderCounts());
-		
-		System.out.println("gyro ( " + Robot.chassisSubsystem.gyro.getName()+ " ) : " + Robot.chassisSubsystem.gyro.getAngle());
-		
 		boolean startAcceleration = oi.isAccelerating();
 		boolean stopAcceleration = oi.isNotAccelerating();
 
 		boolean enableTurbo = oi.enableTurbo();
 		boolean disableTurbo = oi.disableTurbo();
-		
-		boolean resetEncoders = oi.resetEncoders();
-		
-		boolean turnToAngle = oi.turnToAngle();
-		
+
 		double speed = oi.getSpeed();
 		double turn = oi.getTurn();
-		
+
 		double climbSpeed = oi.getClimbSpeed();
-		
+
 		if (startAcceleration) {
 			isAccelerating = true;
 		}
-		
+
 		if (stopAcceleration) {
 			isAccelerating = false;
 		}
@@ -65,28 +55,36 @@ public class JoystickCommand extends Command {
 		} else if (disableTurbo) {
 			chassisSubsystem.setTurbo(false);
 		}
-		
-		if (resetEncoders) {
-			chassisSubsystem.resetClimbEncoder();
-		}
-		
+
+		// if (resetEncoders) {
+		// chassisSubsystem.resetClimbEncoder();
+		// }
+
 		if (isAccelerating) {
 			chassisSubsystem.setAcceleration(speed, turn);
 		} else {
 			chassisSubsystem.setMovement(speed, turn);
 		}
-		
+
 		chassisSubsystem.setClimbMotors(climbSpeed);
-		
-		if (turnToAngle) {
-			Scheduler.getInstance().add(new TurnToAngle(70));
+
+		// lift game controller
+		if (Robot.oi.liftUp()) {
+			chassisSubsystem.setArmLiftSpeed(1);
+		} else if (Robot.oi.liftDown()) {
+			chassisSubsystem.setArmLiftSpeed(-1);
+		} else {
+			chassisSubsystem.setArmLiftSpeed(0);
 		}
-		
-		//lift game controller
-		chassisSubsystem.setArmLiftSpeed(Robot.oi.getliftSpeed());
-		
-		chassisSubsystem.setIntakeSpeed(Robot.oi.getIntakeSpeed());
-		
+
+		if (Robot.oi.intakeIn()) {
+			chassisSubsystem.setIntakeSpeed(-1);
+		} else if (Robot.oi.intakeOut()) {
+			chassisSubsystem.setIntakeSpeed(1);
+		} else {
+			chassisSubsystem.setIntakeSpeed(0);
+		}
+	
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

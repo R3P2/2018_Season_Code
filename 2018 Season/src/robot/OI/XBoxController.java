@@ -1,4 +1,4 @@
-package OI;
+package robot.OI;
 
 public class XBoxController extends GameController {
 

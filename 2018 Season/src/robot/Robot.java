@@ -7,9 +7,11 @@
 
 package robot;
 
-import OI.OI;
+import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import robot.OI.OI;
 import robot.commands.AutoCommand;
 import robot.subsystems.ChassisSubsystem;
 
@@ -23,6 +25,13 @@ import robot.subsystems.ChassisSubsystem;
 public class Robot extends IterativeRobot {
 	public static final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
 	public static OI oi;
+	
+	/**
+	 * 0  - Move Forward
+	 * 1  - Right Auto
+	 * -1 - Left Auto
+	 */
+	public static int auto = 0;
 
 	AutoCommand autonomousCommand;
 
@@ -37,6 +46,7 @@ public class Robot extends IterativeRobot {
 		// SmartDashboard.putData("Auto mode", robotPosition);
 		updateSmartDashboard();
 		chassisSubsystem.chassisInit();
+		CameraServer.getInstance().startAutomaticCapture();
 	}
 
 	/**
@@ -69,7 +79,18 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		 autonomousCommand = new AutoCommand();
+
+		String gameData;
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		if (gameData.length() > 0) {
+			if (gameData.charAt(0) == 'L') {
+				// Put left auto code here
+			} else {
+				// Put right auto code here
+			}
+		}
+
+		autonomousCommand = new AutoCommand();
 
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -82,6 +103,7 @@ public class Robot extends IterativeRobot {
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
 		}
+
 		updateSmartDashboard();
 	}
 

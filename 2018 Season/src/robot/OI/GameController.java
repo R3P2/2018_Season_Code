@@ -1,4 +1,4 @@
-package OI;
+package robot.OI;
 
 import edu.wpi.first.wpilibj.Joystick;
 

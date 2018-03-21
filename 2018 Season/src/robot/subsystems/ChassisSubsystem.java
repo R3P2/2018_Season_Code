@@ -37,10 +37,10 @@ public class ChassisSubsystem extends Subsystem {
 
 	Victor climbMotor = new Victor(9);
 
-	Encoder climbEncoder = new Encoder(2, 3, true);
+	Encoder rightMotorEncoder = new Encoder(2, 3, true);
 
 	double m_dPrevSpeed = 0;
-	double m_dAccelTime_s = 2.0;
+	double m_dAccelTime_s = 1.0;
 	double m_dCycleTime_s = 0.020;
 	int m_nAccelCount = 0;
 	int m_nAccelCycles = (int) (m_dAccelTime_s / m_dCycleTime_s);
@@ -62,17 +62,13 @@ public class ChassisSubsystem extends Subsystem {
 		leftMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 		rightMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 
-		intakeMotor_Two.setInverted(true);
-		armLiftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-
 		leftSpeedPid.enable();
 		rightSpeedPid.enable();
 
+		intakeMotor_One.setInverted(true);
 	}
 
 	public void teleopInit() {
-
-		gyro.calibrate();
 
 	}
 
@@ -104,11 +100,12 @@ public class ChassisSubsystem extends Subsystem {
 	}
 
 	public double getRightEncoderCounts() {
-		return rightMotor_One.getSelectedSensorPosition(0);
+		// return rightMotor_One.getSelectedSensorPosition(0);
+		return rightMotorEncoder.getDistance();
 	}
 
-	public int getRightEncoderRate() {
-		return rightMotor_One.getSelectedSensorVelocity(0);
+	public double getRightEncoderRate() {
+		return rightMotorEncoder.getRate();
 	}
 
 	public int getLeftEncoderRate() {
@@ -119,71 +116,62 @@ public class ChassisSubsystem extends Subsystem {
 		return (getLeftEncoderCounts() + getRightEncoderCounts()) / 2;
 	}
 
-	public double getClimbEncoder() {
-		return climbEncoder.getDistance();
-	}
+	// public double getClimbEncoder() {
+	// return climbEncoder.getDistance();
+	// }
 
-	public void resetClimbEncoder() {
-		climbEncoder.reset();
-	}
-
-	public double getLiftEncoder() {
-		return armLiftMotor.getSelectedSensorPosition(0);
-	}
+	// public void resetClimbEncoder() {
+	// climbEncoder.reset();
+	// }
 
 	public void setClimbMotors(double speed) {
-		if (getClimbEncoder() < RobotMap.MAX_CLIMB_HEIGHT && speed > 0) {
-			climbMotor.set(speed);
-		} else if ((getClimbEncoder() < 100 && speed < 0)) {
-			if ((getClimbEncoder() < RobotMap.MAX_CLIMB_HEIGHT && getClimbEncoder() > 100) && speed > 0) {
-				climbMotor.set(speed);
-			} else {
-				climbMotor.set(0);
-			}
-		}
+		// if (getClimbEncoder() < RobotMap.MAX_CLIMB_HEIGHT && speed > 0) {
+		climbMotor.set(speed);
+		// } else if ((getClimbEncoder() < 100 && speed < 0)) {
+		// if ((getClimbEncoder() < RobotMap.MAX_CLIMB_HEIGHT &&
+		// getClimbEncoder() > 100) && speed > 0) {
+		// climbMotor.set(speed);
+		// } else {
+		// climbMotor.set(0);
+		// }
+		// }
 	}
 
 	private void setLeftMotors(double speed) {
 
-//		leftSpeedPid.setSetpoint(speed);
-//
-//		leftSpeedPid.calculate(getLeftEncoderRate());
+		// leftSpeedPid.setSetpoint(speed);
+		//
+		// leftSpeedPid.calculate(getLeftEncoderRate());
 
-//		leftMotor_One.set(ControlMode.PercentOutput, speed);
-//		leftMotor_Two.set(ControlMode.PercentOutput, speed);
-		
-		 leftMotor_One.set(ControlMode.PercentOutput, movePid(speed,
-		 getLeftEncoderRate(),
-		 RobotMap.MAX_ENCODER_SPEED));
-		 leftMotor_Two.set(ControlMode.PercentOutput, movePid(speed,
-		 getLeftEncoderRate(),
-		 RobotMap.MAX_ENCODER_SPEED));
+		// leftMotor_One.set(ControlMode.PercentOutput, speed);
+		// leftMotor_Two.set(ControlMode.PercentOutput, speed);
+
+		leftMotor_One.set(ControlMode.PercentOutput, movePid(speed, getLeftEncoderRate(), RobotMap.MAX_ENCODER_SPEED));
+		leftMotor_Two.set(ControlMode.PercentOutput, movePid(speed, getLeftEncoderRate(), RobotMap.MAX_ENCODER_SPEED));
 
 	}
 
 	private void setRightMotors(double speed) {
 
-//		// if (speed > 0) {
-//		rightSpeedPid.setSetpoint(speed * 0.88);
-//		// } else {
-//		// rightSpeedPid.setSetpoint(speed * 0.92);
-//		// }
-//		rightSpeedPid.calculate(getRightEncoderRate());
-//
-//		rightMotor_One.set(ControlMode.PercentOutput, speed);
-//		rightMotor_Two.set(ControlMode.PercentOutput, speed);
-		
-		 rightMotor_One.set(ControlMode.PercentOutput, movePid(speed,
-		 getRightEncoderRate(),
-		 RobotMap.MAX_ENCODER_SPEED));
-		 rightMotor_Two.set(ControlMode.PercentOutput, movePid(speed,
-		 getRightEncoderRate(),
-		 RobotMap.MAX_ENCODER_SPEED));
+		// // if (speed > 0) {
+		// rightSpeedPid.setSetpoint(speed * 0.88);
+		// // } else {
+		// // rightSpeedPid.setSetpoint(speed * 0.92);
+		// // }
+		// rightSpeedPid.calculate(getRightEncoderRate());
+		//
+		// rightMotor_One.set(ControlMode.PercentOutput, speed);
+		// rightMotor_Two.set(ControlMode.PercentOutput, speed);
+
+		rightMotor_One.set(ControlMode.PercentOutput,
+				movePid(speed, getRightEncoderRate(), RobotMap.MAX_ENCODER_SPEED));
+		rightMotor_Two.set(ControlMode.PercentOutput,
+				movePid(speed, getRightEncoderRate(), RobotMap.MAX_ENCODER_SPEED));
 
 	}
 
 	public void setMotors(double rightSpeed, double leftSpeed) {
-		
+
 		// Talon Motors
 		setLeftMotors(leftSpeed);
 		setRightMotors(rightSpeed);
@@ -206,7 +194,7 @@ public class ChassisSubsystem extends Subsystem {
 			} else {
 				setMotors((1 - turn) * speed, speed);
 			}
-			
+
 		} else if (dabs_turn > RobotMap.JOYSTICK_NOISE_THRESHOLD) {
 
 			setMotors(-turn, turn);
@@ -331,17 +319,11 @@ public class ChassisSubsystem extends Subsystem {
 
 	public void updateSmartDashboard() {
 		SmartDashboard.putNumber("Gyro", gyro.getAngle());
-		SmartDashboard.putNumber("Climb Encoder", getClimbEncoder());
+		// SmartDashboard.putNumber("Climb Encoder", getClimbEncoder());
 		SmartDashboard.putNumber("Left Encoder", getLeftEncoderCounts());
 		SmartDashboard.putNumber("Right Encoder", getRightEncoderCounts());
 		SmartDashboard.putNumber("Left Encoder Rate", getLeftEncoderRate());
 		SmartDashboard.putNumber("Right Encoder Rate", getRightEncoderRate());
 
-		SmartDashboard.putNumber("Lift Encoder Counts", getLiftEncoder());
-		// SmartDashboard.putNumber("Left PID Speed", value)
-
-		// System.out.println(getLeftEncoderRate() + " " +
-		// getRightEncoderRate());
 	}
-
 }
