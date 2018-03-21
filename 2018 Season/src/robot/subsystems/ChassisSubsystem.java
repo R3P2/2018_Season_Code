@@ -306,7 +306,7 @@ public class ChassisSubsystem extends Subsystem {
 	}
 
 	public void updateSmartDashboard() {
-		SmartDashboard.putData("Gyro", gyro);
+		SmartDashboard.putNumber("Gyro", gyro.getAngle());
 		SmartDashboard.putNumber("Left Encoder", getLeftEncoderCounts());
 		SmartDashboard.putNumber("Right Encoder", getRightEncoderCounts());
 		SmartDashboard.putNumber("Left Encoder Rate", getLeftEncoderRate());
