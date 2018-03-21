@@ -107,60 +107,36 @@ public class ChassisSubsystem extends Subsystem {
 	public double getLeftEncoderCounts() {
 		return leadLeft.getSelectedSensorPosition(0);
 	}
-
+	
 	public double getRightEncoderCounts() {
-		// return rightMotor_One.getSelectedSensorPosition(0);
-		return rightMotorEncoder.getDistance();
-	}
-
-	public double getRightEncoderRate() {
-		return rightMotorEncoder.getRate();
+		return leadRight.getSelectedSensorPosition(0);
 	}
 
 	public int getLeftEncoderRate() {
 		return leadLeft.getSelectedSensorVelocity(0);
 	}
 
+	public double getRightEncoderRate() {
+		return leadRight.getSelectedSensorVelocity(0);
+	}
+
 	public double getEncoderCounts() {
 		return (getLeftEncoderCounts() + getRightEncoderCounts()) / 2;
 	}
 
-	// public double getClimbEncoder() {
-	// return climbEncoder.getDistance();
-	// }
-
-	// public void resetClimbEncoder() {
-	// climbEncoder.reset();
-	// }
-
 	public void setClimbMotors(double speed) {
-		// if (getClimbEncoder() < RobotMap.MAX_CLIMB_HEIGHT && speed > 0) {
 		climbMotor.set(speed);
-		// } else if ((getClimbEncoder() < 100 && speed < 0)) {
-		// if ((getClimbEncoder() < RobotMap.MAX_CLIMB_HEIGHT &&
-		// getClimbEncoder() > 100) && speed > 0) {
-		// climbMotor.set(speed);
-		// } else {
-		// climbMotor.set(0);
-		// }
-		// }
 	}
 
 	private void setLeftMotors(double speed) {
-
 		leadLeft.set(ControlMode.PercentOutput, speed);
-
 	}
 
 	private void setRightMotors(double speed) {
-
 		leadRight.set(ControlMode.PercentOutput, speed);
-
 	}
 
 	public void setMotors(double rightSpeed, double leftSpeed) {
-
-		// Talon Motors
 		setLeftMotors(leftSpeed);
 		setRightMotors(rightSpeed);
 	}
