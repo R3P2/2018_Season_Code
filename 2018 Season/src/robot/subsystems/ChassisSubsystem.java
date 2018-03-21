@@ -61,18 +61,18 @@ public class ChassisSubsystem extends Subsystem {
 		leadLeft.selectProfileSlot(0, 0); // First param is the slot,
 											// second parameter is zero (For
 											// a primary PID loop)
-		leadLeft.config_kF(0, 0.0, RobotMap.K_TIMEOUT_MS);
-		leadLeft.config_kP(0, 0.2, RobotMap.K_TIMEOUT_MS);
-		leadLeft.config_kI(0, 0.0, RobotMap.K_TIMEOUT_MS);
-		leadLeft.config_kD(0, 0.0, RobotMap.K_TIMEOUT_MS);
+		leadLeft.config_kF(0, RobotMap.KF, RobotMap.K_TIMEOUT_MS);
+		leadLeft.config_kP(0, RobotMap.KP, RobotMap.K_TIMEOUT_MS);
+		leadLeft.config_kI(0, RobotMap.KI, RobotMap.K_TIMEOUT_MS);
+		leadLeft.config_kD(0, RobotMap.KD, RobotMap.K_TIMEOUT_MS);
 
 		leadRight.selectProfileSlot(0, 0); // First param is the slot,
 		// second parameter is zero (For
 		// a primary PID loop)
-		leadRight.config_kF(0, 0.0, RobotMap.K_TIMEOUT_MS);
-		leadRight.config_kP(0, 0.2, RobotMap.K_TIMEOUT_MS);
-		leadRight.config_kI(0, 0.0, RobotMap.K_TIMEOUT_MS);
-		leadRight.config_kD(0, 0.0, RobotMap.K_TIMEOUT_MS);
+		leadRight.config_kF(0, RobotMap.KF, RobotMap.K_TIMEOUT_MS);
+		leadRight.config_kP(0, RobotMap.KP, RobotMap.K_TIMEOUT_MS);
+		leadRight.config_kI(0, RobotMap.KI, RobotMap.K_TIMEOUT_MS);
+		leadRight.config_kD(0, RobotMap.KD, RobotMap.K_TIMEOUT_MS);
 
 		intakeMotor_One.setInverted(true);
 	}
