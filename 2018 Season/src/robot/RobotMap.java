@@ -40,4 +40,6 @@ public class RobotMap {
 	public static final double TIME_OUT = 5.0;
 	public static final double MAX_ENCODER_COUNTS_PER_FT = 1800;
 	
+	public static final int K_TIMEOUT_MS = 10;
+	
 }

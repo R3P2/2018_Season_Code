@@ -21,15 +21,11 @@ public class ChassisSubsystem extends Subsystem {
 	// TODO: test auto
 	DoubleSolenoid pancakeShifter = new DoubleSolenoid(0, 1);
 
-	// Our talon speed controlers. Only uncomment when talons are connected:
-	private final TSpeedPID leftSpeedPid = new TSpeedPID(RobotMap.KP, RobotMap.MAX_ENCODER_SPEED);
-	private final TSpeedPID rightSpeedPid = new TSpeedPID(RobotMap.KP, RobotMap.MAX_ENCODER_SPEED);
+	TalonSRX leadLeft = new TalonSRX(RobotMap.LEFT_MOTOR_PORT_ONE);
+	TalonSRX followLeft = new TalonSRX(RobotMap.LEFT_MOTOR_PORT_TWO);
 
-	TalonSRX leftMotor_One = new TalonSRX(RobotMap.LEFT_MOTOR_PORT_ONE);
-	TalonSRX leftMotor_Two = new TalonSRX(RobotMap.LEFT_MOTOR_PORT_TWO);
-
-	TalonSRX rightMotor_One = new TalonSRX(RobotMap.RIGHT_MOTOR_PORT_ONE);
-	TalonSRX rightMotor_Two = new TalonSRX(RobotMap.RIGHT_MOTOR_PORT_TWO);
+	TalonSRX leadRight = new TalonSRX(RobotMap.RIGHT_MOTOR_PORT_ONE);
+	TalonSRX followRight = new TalonSRX(RobotMap.RIGHT_MOTOR_PORT_TWO);
 
 	TalonSRX armLiftMotor = new TalonSRX(RobotMap.ARM_LIFT_MOTOR_PORT);
 	TalonSRX intakeMotor_One = new TalonSRX(RobotMap.INTAKE_MOTOR_ONE_PORT);
@@ -56,14 +52,27 @@ public class ChassisSubsystem extends Subsystem {
 
 	public void chassisInit() {
 
-		rightMotor_One.setInverted(true);
-		rightMotor_Two.setInverted(true);
+		followLeft.follow(leadLeft);
+		followRight.follow(leadRight);
 
-		leftMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
-		rightMotor_One.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+		leadLeft.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
+		leadRight.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
 
-		leftSpeedPid.enable();
-		rightSpeedPid.enable();
+		leadLeft.selectProfileSlot(0, 0); // First param is the slot,
+											// second parameter is zero (For
+											// a primary PID loop)
+		leadLeft.config_kF(0, 0.0, RobotMap.K_TIMEOUT_MS);
+		leadLeft.config_kP(0, 0.2, RobotMap.K_TIMEOUT_MS);
+		leadLeft.config_kI(0, 0.0, RobotMap.K_TIMEOUT_MS);
+		leadLeft.config_kD(0, 0.0, RobotMap.K_TIMEOUT_MS);
+
+		leadRight.selectProfileSlot(0, 0); // First param is the slot,
+		// second parameter is zero (For
+		// a primary PID loop)
+		leadRight.config_kF(0, 0.0, RobotMap.K_TIMEOUT_MS);
+		leadRight.config_kP(0, 0.2, RobotMap.K_TIMEOUT_MS);
+		leadRight.config_kI(0, 0.0, RobotMap.K_TIMEOUT_MS);
+		leadRight.config_kD(0, 0.0, RobotMap.K_TIMEOUT_MS);
 
 		intakeMotor_One.setInverted(true);
 	}
@@ -96,7 +105,7 @@ public class ChassisSubsystem extends Subsystem {
 	}
 
 	public double getLeftEncoderCounts() {
-		return leftMotor_One.getSelectedSensorPosition(0);
+		return leadLeft.getSelectedSensorPosition(0);
 	}
 
 	public double getRightEncoderCounts() {
@@ -109,7 +118,7 @@ public class ChassisSubsystem extends Subsystem {
 	}
 
 	public int getLeftEncoderRate() {
-		return leftMotor_One.getSelectedSensorVelocity(0);
+		return leadLeft.getSelectedSensorVelocity(0);
 	}
 
 	public double getEncoderCounts() {
@@ -139,34 +148,13 @@ public class ChassisSubsystem extends Subsystem {
 
 	private void setLeftMotors(double speed) {
 
-		// leftSpeedPid.setSetpoint(speed);
-		//
-		// leftSpeedPid.calculate(getLeftEncoderRate());
-
-		// leftMotor_One.set(ControlMode.PercentOutput, speed);
-		// leftMotor_Two.set(ControlMode.PercentOutput, speed);
-
-		leftMotor_One.set(ControlMode.PercentOutput, movePid(speed, getLeftEncoderRate(), RobotMap.MAX_ENCODER_SPEED));
-		leftMotor_Two.set(ControlMode.PercentOutput, movePid(speed, getLeftEncoderRate(), RobotMap.MAX_ENCODER_SPEED));
+		leadLeft.set(ControlMode.PercentOutput, speed);
 
 	}
 
 	private void setRightMotors(double speed) {
 
-		// // if (speed > 0) {
-		// rightSpeedPid.setSetpoint(speed * 0.88);
-		// // } else {
-		// // rightSpeedPid.setSetpoint(speed * 0.92);
-		// // }
-		// rightSpeedPid.calculate(getRightEncoderRate());
-		//
-		// rightMotor_One.set(ControlMode.PercentOutput, speed);
-		// rightMotor_Two.set(ControlMode.PercentOutput, speed);
-
-		rightMotor_One.set(ControlMode.PercentOutput,
-				movePid(speed, getRightEncoderRate(), RobotMap.MAX_ENCODER_SPEED));
-		rightMotor_Two.set(ControlMode.PercentOutput,
-				movePid(speed, getRightEncoderRate(), RobotMap.MAX_ENCODER_SPEED));
+		leadRight.set(ControlMode.PercentOutput, speed);
 
 	}
 
